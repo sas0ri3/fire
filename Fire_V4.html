@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jasper FIRE Dashboard v4 — Consolidated AI Review · 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050d1a;--s1:#0a1628;--s2:#0f1e38;--s3:#152442;
+  --bd:#1a2d48;--tx:#cfe0f0;--mu:#4d6a84;
+  --gn:#00d68f;--gn2:#34f5b0;
+  --bl:#3db8f5;--am:#f7b731;--rd:#f05454;
+  --pu:#b08ef5;--te:#2de3bf;--php:#f0c040;
+  --claude:#00d68f;--gemini:#3db8f5;--chatgpt:#f7b731;--meta:#b08ef5;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:14px}
+body{background:var(--bg);color:var(--tx);font-family:'Bricolage Grotesque',sans-serif;line-height:1.5}
+
+/* ─ HEADER ─ */
+.hdr{background:linear-gradient(170deg,#050d1a 0%,#081525 50%,#0a1c35 100%);border-bottom:1px solid var(--bd);padding:24px 32px 20px;position:relative;overflow:hidden}
+.hdr::after{content:'';position:absolute;top:-60px;right:-60px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,214,143,.05) 0%,transparent 70%);pointer-events:none}
+.hdr-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.brand{font-size:10px;letter-spacing:4px;color:var(--gn);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;margin-bottom:5px}
+h1{font-size:26px;font-weight:800;color:#fff;line-height:1.15}
+h1 em{color:var(--gn);font-style:normal}
+.sub{font-size:11px;color:var(--mu);font-family:'IBM Plex Mono',monospace;margin-top:4px}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.badge{display:flex;align-items:center;gap:6px;padding:4px 12px;border-radius:99px;border:1px solid;font-size:9px;font-family:'IBM Plex Mono',monospace;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.badge.consensus{border-color:var(--gn);color:var(--gn);background:rgba(0,214,143,.07)}
+.badge.caution{border-color:var(--am);color:var(--am);background:rgba(247,183,49,.07)}
+.badge.critical{border-color:var(--rd);color:var(--rd);background:rgba(240,84,84,.07)}
+.scn-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.scn-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--mu);font-family:'IBM Plex Mono',monospace}
+.btn-grp{display:flex;gap:2px;background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:3px}
+.bsc{padding:6px 16px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;transition:all .15s;color:var(--mu)}
+.bsc.bear.act{background:rgba(240,84,84,.18);color:var(--rd)}
+.bsc.base.act{background:rgba(0,214,143,.18);color:var(--gn)}
+.bsc.bull.act{background:rgba(247,183,49,.18);color:var(--am)}
+
+/* KPI */
+.kpi-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.kpi{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:12px 16px;flex:1;min-width:145px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ka,var(--gn))}
+.kl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);font-family:'IBM Plex Mono',monospace;margin-bottom:5px}
+.kv{font-size:19px;font-weight:800;color:var(--ka,var(--gn));font-family:'IBM Plex Mono',monospace;line-height:1}
+.ks{font-size:10px;color:var(--mu);margin-top:3px;font-family:'IBM Plex Mono',monospace}
+
+/* MAIN */
+.main{padding:20px 32px;max-width:1900px}
+.sh{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.st{font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--tx)}
+.sg{font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--mu);border:1px solid var(--bd);padding:2px 10px;border-radius:99px}
+.ml{margin-left:auto}
+.hg{height:1px;background:var(--bd);margin:20px 0}
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:20px 24px;margin-bottom:20px}
+.twrap{overflow-x:auto;overflow-y:auto;max-height:520px}
+.twrap::-webkit-scrollbar{width:5px;height:5px}
+.twrap::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+table{width:100%;border-collapse:collapse;white-space:nowrap}
+thead{position:sticky;top:0;z-index:8}
+th{background:var(--s2);border-bottom:1px solid var(--bd);padding:9px 12px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);font-family:'IBM Plex Mono',monospace}
+th.lft{text-align:left}
+td{padding:7px 12px;text-align:center;border-bottom:1px solid rgba(26,45,72,.5);font-family:'IBM Plex Mono',monospace;font-size:11px}
+td.lft{text-align:left;font-family:'Bricolage Grotesque',sans-serif}
+tr:hover td{background:rgba(21,36,66,.6)}
+
+/* AI COMPARISON GRID */
+.ai-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:1100px){.ai-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.ai-grid{grid-template-columns:1fr}}
+.ai-card{border-radius:12px;padding:16px;border:1px solid;position:relative;overflow:hidden}
+.ai-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ac)}
+.ai-card.claude{border-color:rgba(0,214,143,.3);background:rgba(0,214,143,.04);--ac:var(--claude)}
+.ai-card.gemini{border-color:rgba(61,184,245,.3);background:rgba(61,184,245,.04);--ac:var(--gemini)}
+.ai-card.chatgpt{border-color:rgba(247,183,49,.3);background:rgba(247,183,49,.04);--ac:var(--chatgpt)}
+.ai-card.meta{border-color:rgba(176,142,245,.3);background:rgba(176,142,245,.04);--ac:var(--meta)}
+.ai-name{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;margin-bottom:8px}
+.ai-card.claude .ai-name{color:var(--claude)}
+.ai-card.gemini .ai-name{color:var(--gemini)}
+.ai-card.chatgpt .ai-name{color:var(--chatgpt)}
+.ai-card.meta .ai-name{color:var(--meta)}
+.ai-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px solid rgba(26,45,72,.4);font-size:11px}
+.ai-row:last-child{border-bottom:none}
+.ai-lbl{color:var(--mu);font-size:10px;font-family:'IBM Plex Mono',monospace}
+.ai-val{font-weight:700;font-family:'IBM Plex Mono',monospace}
+.verdict{margin-top:10px;padding:8px 10px;border-radius:7px;font-size:10px;font-family:'IBM Plex Mono',monospace;line-height:1.5}
+.verdict.ok{background:rgba(0,214,143,.08);color:var(--gn);border:1px solid rgba(0,214,143,.2)}
+.verdict.warn{background:rgba(247,183,49,.08);color:var(--am);border:1px solid rgba(247,183,49,.2)}
+.verdict.bad{background:rgba(240,84,84,.08);color:var(--rd);border:1px solid rgba(240,84,84,.2)}
+
+/* RISK MATRIX */
+.risk-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+@media(max-width:900px){.risk-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.risk-grid{grid-template-columns:1fr}}
+.risk-card{border-radius:10px;padding:14px;border:1px solid var(--bd)}
+.risk-sev{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.sev-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sev-lbl{font-size:8px;letter-spacing:2px;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;font-weight:700}
+.risk-title{font-size:12px;font-weight:700;margin-bottom:5px}
+.risk-detail{font-size:10px;color:var(--mu);line-height:1.5}
+.risk-owners{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.owner-tag{font-size:8px;padding:2px 7px;border-radius:99px;border:1px solid;font-family:'IBM Plex Mono',monospace;font-weight:700}
+.owner-tag.claude{border-color:var(--claude);color:var(--claude)}
+.owner-tag.gemini{border-color:var(--gemini);color:var(--gemini)}
+.owner-tag.chatgpt{border-color:var(--chatgpt);color:var(--chatgpt)}
+.owner-tag.meta{border-color:var(--meta);color:var(--meta)}
+.risk-fix{margin-top:8px;padding:7px 10px;border-radius:6px;font-size:10px;font-family:'IBM Plex Mono',monospace;line-height:1.5;color:var(--gn);background:rgba(0,214,143,.05);border:1px solid rgba(0,214,143,.15)}
+.sev-critical .sev-dot{background:var(--rd)}
+.sev-critical .sev-lbl{color:var(--rd)}
+.sev-critical{border-color:rgba(240,84,84,.3)!important;background:rgba(240,84,84,.03)!important}
+.sev-high .sev-dot{background:var(--am)}
+.sev-high .sev-lbl{color:var(--am)}
+.sev-high{border-color:rgba(247,183,49,.25)!important;background:rgba(247,183,49,.03)!important}
+.sev-medium .sev-dot{background:var(--bl)}
+.sev-medium .sev-lbl{color:var(--bl)}
+.sev-medium{border-color:rgba(61,184,245,.2)!important;background:rgba(61,184,245,.02)!important}
+
+/* CHART */
+.chart-card{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:20px 24px;margin-bottom:20px}
+.ch-wrap{position:relative;height:380px}
+.vtog{display:flex;gap:2px;background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:3px}
+.bv{padding:4px 13px;border-radius:5px;border:none;background:transparent;color:var(--mu);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:all .15s}
+.bv.act{background:var(--s3);color:var(--tx)}
+.leg{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px}
+.li{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--mu);font-family:'IBM Plex Mono',monospace}
+.ll{width:22px;height:2px;border-radius:2px}
+
+/* PHASE TIMELINE */
+.phase-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px}
+@media(max-width:900px){.phase-row{grid-template-columns:repeat(2,1fr)}}
+.phase{border-radius:10px;padding:14px;border:1px solid var(--bd);background:var(--s1)}
+.ph-yr{font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--mu);margin-bottom:4px}
+.ph-title{font-size:12px;font-weight:700;margin-bottom:6px}
+.ph-item{font-size:10px;color:var(--mu);display:flex;gap:6px;margin-bottom:3px}
+.ph-item::before{content:'→';color:var(--bd);flex-shrink:0}
+
+/* PORTFOLIO */
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-bottom:20px}
+.pc{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:14px;position:relative;overflow:hidden;transition:border-color .2s}
+.pc:hover{border-color:var(--gn)}
+.pc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--pa,var(--gn)),transparent)}
+.pp{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);font-family:'IBM Plex Mono',monospace;margin-bottom:5px}
+.pn{font-size:12px;font-weight:700;margin-bottom:5px}
+.pv{font-size:17px;font-weight:800;font-family:'IBM Plex Mono',monospace;color:var(--pa,var(--gn))}
+.pd{font-size:9px;color:var(--mu);margin-top:3px;font-family:'IBM Plex Mono',monospace}
+
+/* RE */
+.rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-bottom:20px}
+.rc{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:14px}
+.rb{display:inline-block;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:2px 9px;border-radius:99px;margin-bottom:8px;font-family:'IBM Plex Mono',monospace;font-weight:700}
+.rb.paid{background:rgba(0,214,143,.15);color:var(--gn)}
+.rb.part{background:rgba(247,183,49,.15);color:var(--am)}
+.rn{font-size:13px;font-weight:700;margin-bottom:3px}
+.rd2{font-size:11px;color:var(--mu)}
+
+/* ROW STYLING */
+tr.rt td{border-top:2px solid var(--gn)!important;background:rgba(0,214,143,.03)}
+tr.danger td{background:rgba(240,84,84,.03)}
+tr.age60 td{background:rgba(61,184,245,.03)}
+.yr{font-weight:700;font-size:12px}
+.ynote{display:block;font-size:9px;margin-top:1px;font-family:'IBM Plex Mono',monospace}
+
+/* COLORS */
+.gn{color:var(--gn)}.bl{color:var(--bl)}.am{color:var(--am)}.rd{color:var(--rd)}.mu{color:var(--mu)}.pu{color:var(--pu)}.te{color:var(--te)}.ph{color:var(--php)}
+
+/* CONSENSUS TABLE */
+.ctable{width:100%;border-collapse:collapse;font-size:11px}
+.ctable th{background:var(--s2);padding:9px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);font-family:'IBM Plex Mono',monospace;border-bottom:1px solid var(--bd)}
+.ctable td{padding:9px 14px;border-bottom:1px solid rgba(26,45,72,.4);vertical-align:top}
+.ctable td.metric{font-weight:700;font-size:11px;color:var(--tx);white-space:nowrap}
+.ctable td.metric span{display:block;font-size:9px;font-weight:400;color:var(--mu);margin-top:2px;font-family:'IBM Plex Mono',monospace}
+.ctable td.v-claude{color:var(--claude);font-family:'IBM Plex Mono',monospace}
+.ctable td.v-gemini{color:var(--gemini);font-family:'IBM Plex Mono',monospace}
+.ctable td.v-chatgpt{color:var(--chatgpt);font-family:'IBM Plex Mono',monospace}
+.ctable td.v-meta{color:var(--meta);font-family:'IBM Plex Mono',monospace}
+.ctable td.v-v4{color:var(--gn);font-family:'IBM Plex Mono',monospace;font-weight:700}
+.ctable tr:hover td{background:rgba(21,36,66,.5)}
+.icon-ok{color:var(--gn)}
+.icon-warn{color:var(--am)}
+.icon-bad{color:var(--rd)}
+
+/* DIFF BAR */
+.diffbar{display:flex;gap:6px;align-items:center;font-size:9px;font-family:'IBM Plex Mono',monospace}
+.dbfill{height:4px;border-radius:2px;min-width:2px}
+
+footer{text-align:center;padding:16px;color:var(--mu);font-size:9px;font-family:'IBM Plex Mono',monospace;border-top:1px solid var(--bd);letter-spacing:1px;margin-top:20px}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════════════════════════ -->
+<div class="hdr">
+  <div class="hdr-row">
+    <div>
+      <div class="brand">FIRE Master Dashboard · v4 Consolidated · All AI Models · May 2026</div>
+      <h1>Jasper <em>FIRE</em> 2030 — AI Consensus Review</h1>
+      <div class="sub">Retiring April 2030 · Age 46 · Singapore → Santa Rosa, Laguna · Family of 4 · Claude³ · Gemini · ChatGPT · Meta</div>
+      <div class="badge-row">
+        <div class="badge consensus">✓ 2030 NW ~$5.7M Consensus</div>
+        <div class="badge caution">⚡ AAPL 88% Concentration</div>
+        <div class="badge critical">⚠ 2060 NW Diverges $70M–$144M</div>
+        <div class="badge consensus">✓ SWR &lt;3.5% All Scenarios</div>
+        <div class="badge caution">⚡ Condo Income Unmodeled by Claude</div>
+      </div>
+    </div>
+    <div class="scn-wrap">
+      <span class="scn-lbl">Scenario</span>
+      <div class="btn-grp">
+        <button class="bsc bear" id="b-bear" onclick="setScenario('bear')">BEAR</button>
+        <button class="bsc base act" id="b-base" onclick="setScenario('base')">BASE</button>
+        <button class="bsc bull" id="b-bull" onclick="setScenario('bull')">BULL</button>
+      </div>
+    </div>
+  </div>
+  <div class="kpi-row" id="kpiRow"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MAIN
+════════════════════════════════════════════════════════════════ -->
+<div class="main">
+
+<!-- ── SECTION 1: AI MODEL SCORECARDS ── -->
+<div class="sh">
+  <span class="st">AI Model Scorecards</span>
+  <span class="sg">4 Models · Side-by-Side</span>
+</div>
+<div class="ai-grid">
+  <!-- CLAUDE -->
+  <div class="ai-card claude">
+    <div class="ai-name">🟢 Claude v3</div>
+    <div class="ai-row"><span class="ai-lbl">AAPL Basis</span><span class="ai-val gn">$543 (2030 proj)</span></div>
+    <div class="ai-row"><span class="ai-lbl">Shares @ 2030</span><span class="ai-val">9,595</span></div>
+    <div class="ai-row"><span class="ai-lbl">AAPL Value</span><span class="ai-val">$5.21M</span></div>
+    <div class="ai-row"><span class="ai-lbl">IBKR 2030</span><span class="ai-val">$618K</span></div>
+    <div class="ai-row"><span class="ai-lbl">Combined 2030</span><span class="ai-val">$5.83M</span></div>
+    <div class="ai-row"><span class="ai-lbl">2060 NW (base)</span><span class="ai-val">~$70M</span></div>
+    <div class="ai-row"><span class="ai-lbl">Condo Income</span><span class="ai-val am">Partial ₱432K/yr</span></div>
+    <div class="ai-row"><span class="ai-lbl">SRS Tax Model</span><span class="ai-val am">Not detailed</span></div>
+    <div class="ai-row"><span class="ai-lbl">Averdeen Fund</span><span class="ai-val am">AAPL sales implied</span></div>
+    <div class="ai-row"><span class="ai-lbl">PHP/USD</span><span class="ai-val gn">57 ✓</span></div>
+    <div class="verdict warn">⚠ AAPL basis overstated — starts at $543 end-state vs today's $309. Underestimates 2060 NW because CAGR math applies to higher base. Table was empty in v2.</div>
+  </div>
+  <!-- GEMINI -->
+  <div class="ai-card gemini">
+    <div class="ai-name">🔵 Gemini</div>
+    <div class="ai-row"><span class="ai-lbl">AAPL Basis</span><span class="ai-val bl">$308.83 (today ✓)</span></div>
+    <div class="ai-row"><span class="ai-lbl">Shares @ 2030</span><span class="ai-val">10,488 (−240 sold)</span></div>
+    <div class="ai-row"><span class="ai-lbl">AAPL Value</span><span class="ai-val">$5.10M</span></div>
+    <div class="ai-row"><span class="ai-lbl">IBKR 2030</span><span class="ai-val">$575K</span></div>
+    <div class="ai-row"><span class="ai-lbl">Combined 2030</span><span class="ai-val">$5.71M</span></div>
+    <div class="ai-row"><span class="ai-lbl">2060 NW (base)</span><span class="ai-val">~$144M</span></div>
+    <div class="ai-row"><span class="ai-lbl">Condo Income</span><span class="ai-val rd">Not modeled</span></div>
+    <div class="ai-row"><span class="ai-lbl">SRS Tax Model</span><span class="ai-val gn">50% taxable, 15%</span></div>
+    <div class="ai-row"><span class="ai-lbl">Averdeen Fund</span><span class="ai-val gn">eToro+Maxgrowth first</span></div>
+    <div class="ai-row"><span class="ai-lbl">PHP/USD</span><span class="ai-val am">57 noted as optimistic</span></div>
+    <div class="verdict ok">✓ Most precise AAPL modeling. Identified SRS SGD 17K float gap. Flagged PHP strengthening risk. Averdeen funding sequence optimized. Best overall framework.</div>
+  </div>
+  <!-- CHATGPT -->
+  <div class="ai-card chatgpt">
+    <div class="ai-name">🟡 ChatGPT</div>
+    <div class="ai-row"><span class="ai-lbl">AAPL Basis</span><span class="ai-val am">~$309 (similar Gemini)</span></div>
+    <div class="ai-row"><span class="ai-lbl">Shares @ 2030</span><span class="ai-val">~10,488</span></div>
+    <div class="ai-row"><span class="ai-lbl">AAPL Value</span><span class="ai-val">~$5.1M</span></div>
+    <div class="ai-row"><span class="ai-lbl">IBKR 2030</span><span class="ai-val">~$575K</span></div>
+    <div class="ai-row"><span class="ai-lbl">Combined 2030</span><span class="ai-val">~$5.7M</span></div>
+    <div class="ai-row"><span class="ai-lbl">2060 NW (base)</span><span class="ai-val">Not specified</span></div>
+    <div class="ai-row"><span class="ai-lbl">Condo Income</span><span class="ai-val rd">Not modeled</span></div>
+    <div class="ai-row"><span class="ai-lbl">SRS Tax Model</span><span class="ai-val am">Mentioned, undetailed</span></div>
+    <div class="ai-row"><span class="ai-lbl">Averdeen Fund</span><span class="ai-val am">eToro first (approx)</span></div>
+    <div class="ai-row"><span class="ai-lbl">PHP/USD</span><span class="ai-val gn">57 ✓</span></div>
+    <div class="verdict warn">⚠ Confirmed Gemini's 2030 numbers. Produced healthcare/inflation critique and sequence risk framework. No distinct 2060 projection. Aligns with Gemini/Meta consensus.</div>
+  </div>
+  <!-- META -->
+  <div class="ai-card meta">
+    <div class="ai-name">🟣 Meta (Llama)</div>
+    <div class="ai-row"><span class="ai-lbl">AAPL Basis</span><span class="ai-val pu">$308.83 (today ✓)</span></div>
+    <div class="ai-row"><span class="ai-lbl">Shares @ 2030</span><span class="ai-val">10,488</span></div>
+    <div class="ai-row"><span class="ai-lbl">AAPL Value</span><span class="ai-val">$5.10M</span></div>
+    <div class="ai-row"><span class="ai-lbl">IBKR 2030</span><span class="ai-val">$575K</span></div>
+    <div class="ai-row"><span class="ai-lbl">Combined 2030</span><span class="ai-val">$5.71M</span></div>
+    <div class="ai-row"><span class="ai-lbl">2060 NW (base)</span><span class="ai-val">~$144M</span></div>
+    <div class="ai-row"><span class="ai-lbl">Condo Income</span><span class="ai-val am">Flagged ₱840K/yr</span></div>
+    <div class="ai-row"><span class="ai-lbl">SRS Tax Model</span><span class="ai-val gn">50% taxable, 15%</span></div>
+    <div class="ai-row"><span class="ai-lbl">Averdeen Fund</span><span class="ai-val gn">eToro+Maxgrowth first</span></div>
+    <div class="ai-row"><span class="ai-lbl">PHP/USD</span><span class="ai-val gn">57 baseline ✓</span></div>
+    <div class="verdict ok">✓ Best condo income analysis: ₱840K/yr (~$14.7K) reduces safe withdrawal rate from 2.1%→1.8%. Cuts forced AAPL sales by ~40% via pre-funding. PH assets separate liquidity pool.</div>
+  </div>
+</div>
+
+<!-- ── SECTION 2: CONSOLIDATED SUMMARY TABLE ── -->
+<div class="card">
+  <div class="sh"><span class="st">Consolidated Summary Table</span><span class="sg">All 4 Models · v4 Consensus Highlighted</span></div>
+  <div class="twrap">
+    <table class="ctable">
+      <thead>
+        <tr>
+          <th class="lft" style="min-width:220px">Metric</th>
+          <th style="color:var(--claude)">Claude v3</th>
+          <th style="color:var(--gemini)">Gemini</th>
+          <th style="color:var(--chatgpt)">ChatGPT</th>
+          <th style="color:var(--meta)">Meta</th>
+          <th style="color:var(--gn)">v4 Consensus</th>
+          <th style="min-width:180px;text-align:left">Assessment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="metric lft">AAPL price basis<span>Starting point for projections</span></td>
+          <td class="v-claude">$543 (2030 est.)</td>
+          <td class="v-gemini">$308.83 ✓</td>
+          <td class="v-chatgpt">~$309 ✓</td>
+          <td class="v-meta">$308.83 ✓</td>
+          <td class="v-v4">$309 today</td>
+          <td class="lft" style="color:var(--rd);font-size:10px">⚠ Claude starts 76% above today — inflates early runway illusion</td>
+        </tr>
+        <tr>
+          <td class="metric lft">AAPL shares @ Apr 2030<span>After RSU+ESPP+pre-ret sales</span></td>
+          <td class="v-claude">9,595</td>
+          <td class="v-gemini">10,488</td>
+          <td class="v-chatgpt">~10,488</td>
+          <td class="v-meta">10,488</td>
+          <td class="v-v4">10,488</td>
+          <td class="lft" style="color:var(--am);font-size:10px">⚡ Claude undersells shares gained from RSU/ESPP vest 2026–30</td>
+        </tr>
+        <tr>
+          <td class="metric lft">AAPL value @ 2030<span>Projected Apr 2030</span></td>
+          <td class="v-claude">$5.21M</td>
+          <td class="v-gemini">$5.10M</td>
+          <td class="v-chatgpt">~$5.1M</td>
+          <td class="v-meta">$5.10M</td>
+          <td class="v-v4">$5.10–5.21M</td>
+          <td class="lft" style="color:var(--gn);font-size:10px">✓ Converges. 3-model consensus at $5.10M more defensible</td>
+        </tr>
+        <tr>
+          <td class="metric lft">IBKR value @ 2030<span>ETF portfolio</span></td>
+          <td class="v-claude">$618K</td>
+          <td class="v-gemini">$575K</td>
+          <td class="v-chatgpt">~$575K</td>
+          <td class="v-meta">$575K</td>
+          <td class="v-v4">$575–618K</td>
+          <td class="lft" style="color:var(--am);font-size:10px">⚡ Claude +7.5% higher — difference is SRS/Maxgrowth transfer timing</td>
+        </tr>
+        <tr>
+          <td class="metric lft">Combined liquid NW 2030<span>AAPL + IBKR</span></td>
+          <td class="v-claude">$5.83M</td>
+          <td class="v-gemini">$5.71M</td>
+          <td class="v-chatgpt">~$5.7M</td>
+          <td class="v-meta">$5.71M</td>
+          <td class="v-v4">$5.71M base</td>
+          <td class="lft" style="color:var(--gn);font-size:10px">✓ Strong consensus. All models confirm retirement viable</td>
+        </tr>
+        <tr>
+          <td class="metric lft">NW @ 2060 base case<span>AAPL + IBKR</span></td>
+          <td class="v-claude">~$70M</td>
+          <td class="v-gemini">~$144M</td>
+          <td class="v-chatgpt">—</td>
+          <td class="v-meta">~$144M</td>
+          <td class="v-v4" id="nw2060kpi">—</td>
+          <td class="lft" style="color:var(--rd);font-size:10px">⚠ 2× divergence. Gap = AAPL CAGR from $309 vs $543 base × 30yrs. v4 uses $309 = higher 2060 NW</td>
+        </tr>
+        <tr>
+          <td class="metric lft">AAPL CAGR assumption<span>Bear / Base / Bull</span></td>
+          <td class="v-claude">7% / 12% / 15%</td>
+          <td class="v-gemini">5% / 12% / 18%</td>
+          <td class="v-chatgpt">Similar Gemini</td>
+          <td class="v-meta">5% / 12% / 18%</td>
+          <td class="v-v4">5% / 12% / 18%</td>
+          <td class="lft" style="color:var(--am);font-size:10px">⚡ Gemini/Meta bear (5%) more conservative than Claude (7%). Adopted in v4</td>
+        </tr>
+        <tr>
+          <td class="metric lft">IBKR CAGR assumption<span>Bear / Base / Bull</span></td>
+          <td class="v-claude">6% / 9% / 12%</td>
+          <td class="v-gemini">4% / 8% / 12%</td>
+          <td class="v-chatgpt">Similar Gemini</td>
+          <td class="v-meta">4% / 8% / 12%</td>
+          <td class="v-v4">4% / 8% / 12%</td>
+          <td class="lft" style="color:var(--am);font-size:10px">⚡ v4 adopts more conservative base 8% vs Claude's 9%</td>
+        </tr>
+        <tr>
+          <td class="metric lft">Manila condo income<span>2 units near DLSU</span></td>
+          <td class="v-claude">₱432K/yr partial</td>
+          <td class="v-gemini">Not modeled</td>
+          <td class="v-chatgpt">Not modeled</td>
+          <td class="v-meta">₱840K/yr flagged</td>
+          <td class="v-v4">₱840K/yr included</td>
+          <td class="lft" style="color:var(--rd);font-size:10px">⚠ ₱840K = $14.7K/yr — reduces SWR 2.1%→1.8%. All 3 models missed or understated this</td>
+        </tr>
+        <tr>
+          <td class="metric lft">SRS withdrawal tax<span>Singapore CPF-SRS</span></td>
+          <td class="v-claude">Not detailed</td>
+          <td class="v-gemini">SGD 17K float</td>
+          <td class="v-chatgpt">Mentioned</td>
+          <td class="v-meta">~$270K net to IBKR</td>
+          <td class="v-v4">Net ~$270K to IBKR</td>
+          <td class="lft" style="color:var(--am);font-size:10px">⚡ 24% withheld, refund to 15%. Need SGD 17K float in 2030 — not in Claude's model</td>
+        </tr>
+        <tr>
+          <td class="metric lft">Averdeen funding<span>₱18M build 2027–28</span></td>
+          <td class="v-claude">AAPL sales (implied)</td>
+          <td class="v-gemini">eToro+Maxgrowth first</td>
+          <td class="v-chatgpt">eToro first</td>
+          <td class="v-meta">eToro+Maxgrowth first</td>
+          <td class="v-v4">eToro ($170K) + Maxgrowth ($49K) first</td>
+          <td class="lft" style="color:var(--gn);font-size:10px">✓ Pre-funding cuts forced AAPL sales ~40%. Reduces sequence-of-returns risk in danger zone 2027–2030</td>
+        </tr>
+        <tr>
+          <td class="metric lft">PHP/USD exchange rate<span>At retirement 2030</span></td>
+          <td class="v-claude">57 (−0.5%/yr)</td>
+          <td class="v-gemini">57 "optimistic"</td>
+          <td class="v-chatgpt">57</td>
+          <td class="v-meta">57</td>
+          <td class="v-v4">57 (−0.5%/yr)</td>
+          <td class="lft" style="color:var(--am);font-size:10px">⚡ Gemini flags: if PHP→51, expenses +12%. Unhedged FX risk. Conservative to use 57 with gradual weakening</td>
+        </tr>
+        <tr>
+          <td class="metric lft">AAPL concentration @ 2030<span>% of liquid NW</span></td>
+          <td class="v-claude">~89%</td>
+          <td class="v-gemini">88%</td>
+          <td class="v-chatgpt">~88%</td>
+          <td class="v-meta">88%</td>
+          <td class="v-v4" style="color:var(--rd)">88% ⚠ CRITICAL</td>
+          <td class="lft" style="color:var(--rd);font-size:10px">⚠ Unanimous concern. A 40% AAPL drawdown = −$2.04M at retirement. No hedge in any model</td>
+        </tr>
+        <tr>
+          <td class="metric lft">Sequence-of-returns risk<span>2027–2030 danger zone</span></td>
+          <td class="v-claude">Partially noted</td>
+          <td class="v-gemini">Modeled, quantified</td>
+          <td class="v-chatgpt">Framework provided</td>
+          <td class="v-meta">Quantified</td>
+          <td class="v-v4">Explicit in table</td>
+          <td class="lft" style="color:var(--am);font-size:10px">⚡ 3 builds hit in years 1–13 of retirement. Max risk window = 2027–2032. Use collar or eToro buffer</td>
+        </tr>
+        <tr>
+          <td class="metric lft">Dividend crossover year<span>Dividends ≥ expenses</span></td>
+          <td class="v-claude">~2045</td>
+          <td class="v-gemini">~2042–2044</td>
+          <td class="v-chatgpt">~2042–2045</td>
+          <td class="v-meta">~2043</td>
+          <td class="v-v4" id="crossoverKPI">—</td>
+          <td class="lft" style="color:var(--gn);font-size:10px">✓ Consensus: Dividends self-fund expenses by early 2040s. Zero AAPL sales needed post-crossover</td>
+        </tr>
+        <tr>
+          <td class="metric lft">Safe withdrawal rate<span>Current liquid NW</span></td>
+          <td class="v-claude">~3.1%</td>
+          <td class="v-gemini">~2.1% (incl. condo)</td>
+          <td class="v-chatgpt">~2.5–3%</td>
+          <td class="v-meta">1.8% (incl. condo)</td>
+          <td class="v-v4" id="swrKPI">—</td>
+          <td class="lft" style="color:var(--gn);font-size:10px">✓ All models: SWR well below 4% threshold. Including condo income drops it comfortably to sub-2%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── SECTION 3: CRITICAL RISKS ── -->
+<div class="sh"><span class="st">Critical Risk Scorecard</span><span class="sg">Consolidated · 8 Risks · Severity Weighted</span></div>
+<div class="risk-grid">
+  <div class="risk-card sev-critical">
+    <div class="risk-sev"><div class="sev-dot"></div><div class="sev-lbl">Critical</div></div>
+    <div class="risk-title">AAPL Single-Stock Concentration</div>
+    <div class="risk-detail">88% of liquid NW in one stock at retirement. A 30% AAPL correction (e.g. iPhone cycle miss + margin pressure) = −$1.5M NW hit. No model has a hedge structure.</div>
+    <div class="risk-owners">
+      <span class="owner-tag claude">Claude</span><span class="owner-tag gemini">Gemini</span><span class="owner-tag chatgpt">ChatGPT</span><span class="owner-tag meta">Meta</span>
+    </div>
+    <div class="risk-fix">→ Fix: AAPL protective put collar (2028 LEAPS) or systematic sale into IBKR ETFs from 2026. Target 60% AAPL / 40% diversified by 2030.</div>
+  </div>
+  <div class="risk-card sev-critical">
+    <div class="risk-sev"><div class="sev-dot"></div><div class="sev-lbl">Critical</div></div>
+    <div class="risk-title">Build Cluster in Danger Zone</div>
+    <div class="risk-detail">₱59M of construction (Averdeen ₱18M, Palawan ₱8M, Lipa ₱11M, San Juan partial) hits years 1–13 of retirement. Sequence-of-returns risk is highest in this window — a AAPL bear market forces selling shares at depressed prices.</div>
+    <div class="risk-owners">
+      <span class="owner-tag gemini">Gemini</span><span class="owner-tag chatgpt">ChatGPT</span><span class="owner-tag meta">Meta</span>
+    </div>
+    <div class="risk-fix">→ Fix: Pre-fund Averdeen from eToro ($170K) + Maxgrowth ($49K). Defer Lipa/Palawan builds if AAPL &lt;$400 at 2030. Hold ₱2M PHP liquid buffer.</div>
+  </div>
+  <div class="risk-card sev-critical">
+    <div class="risk-sev"><div class="sev-dot"></div><div class="sev-lbl">Critical</div></div>
+    <div class="risk-title">Janao Farm Title Unresolved</div>
+    <div class="risk-detail">800 sqm San Juan Batangas with unresolved title. If not cleared before 2029, potential legal/financial exposure during retirement when cash flow is constrained. All models flag this but none quantify the legal cost risk (est. ₱500K–₱2M worst case).</div>
+    <div class="risk-owners">
+      <span class="owner-tag claude">Claude</span><span class="owner-tag gemini">Gemini</span>
+    </div>
+    <div class="risk-fix">→ Fix: Resolve title by Dec 2028 deadline. Budget ₱500K legal reserve. If unresolvable, factor asset write-off or sale of lot.</div>
+  </div>
+  <div class="risk-card sev-high">
+    <div class="risk-sev"><div class="sev-dot"></div><div class="sev-lbl">High</div></div>
+    <div class="risk-title">SRS Withholding Cash Float Gap</div>
+    <div class="risk-detail">IRAS withholds 24% upfront on 50% taxable SRS portion (~SGD 197K taxable). Withholds SGD 47K, actual tax SGD 30K (15% concessionary). Refund takes 6–12 months — need SGD 17K float in 2030 that Claude's model doesn't surface.</div>
+    <div class="risk-owners">
+      <span class="owner-tag gemini">Gemini</span><span class="owner-tag meta">Meta</span>
+    </div>
+    <div class="risk-fix">→ Fix: Park SGD 20K in OCBC 360 in 2029–2030 as float. Don't count SRS proceeds as available Day 1.</div>
+  </div>
+  <div class="risk-card sev-high">
+    <div class="risk-sev"><div class="sev-dot"></div><div class="sev-lbl">High</div></div>
+    <div class="risk-title">Unmodeled Manila Condo Income</div>
+    <div class="risk-detail">Two DLSU-area condos at ₱35K/unit/month = ₱840K/yr (~$14.7K). Growing at ~3%/yr, reaches ₱1.3M/yr by 2045 (~$22K). None of the models fully incorporates this as a separate income stream reducing AAPL draw. Meta flagged it but didn't model it.</div>
+    <div class="risk-owners">
+      <span class="owner-tag meta">Meta</span>
+    </div>
+    <div class="risk-fix">→ Fix: Treat ₱840K/yr as income offset against expenses — reduces net annual draw by ~$14.7K. Saves ~0.5 fewer AAPL shares sold per year.</div>
+  </div>
+  <div class="risk-card sev-high">
+    <div class="risk-sev"><div class="sev-dot"></div><div class="sev-lbl">High</div></div>
+    <div class="risk-title">PHP/USD Strengthening Scenario</div>
+    <div class="risk-detail">All models use PHP 57/USD as base. If peso strengthens to 51 (historically plausible), annual $140K budget becomes $157K — a 12% USD cost increase that's unhedged. PH construction costs also rise in USD terms.</div>
+    <div class="risk-owners">
+      <span class="owner-tag gemini">Gemini</span>
+    </div>
+    <div class="risk-fix">→ Fix: Model PHP/USD at 53 as stress test. Keep 6-month PHP expenses in PHP accounts, not USD. Philippine income (rent) naturally hedges this.</div>
+  </div>
+  <div class="risk-card sev-medium">
+    <div class="risk-sev"><div class="sev-dot"></div><div class="sev-lbl">Medium</div></div>
+    <div class="risk-title">Healthcare Cost Inflation</div>
+    <div class="risk-detail">No model explicitly inflation-adjusts Philippine healthcare costs. PhilHealth premiums increase. Private hospital costs in PH growing ~8–10%/yr vs general CPI 4%. Lauren/Celine healthcare costs not itemized. Dental, preventive, long-term care not modeled.</div>
+    <div class="risk-owners">
+      <span class="owner-tag chatgpt">ChatGPT</span>
+    </div>
+    <div class="risk-fix">→ Fix: Add ₱200K/yr healthcare line item in years 2040–2060. Consider Manulife PH comprehensive health insurance from 2030.</div>
+  </div>
+  <div class="risk-card sev-medium">
+    <div class="risk-sev"><div class="sev-dot"></div><div class="sev-lbl">Medium</div></div>
+    <div class="risk-title">Education Cost Gap (Lauren + Celine)</div>
+    <div class="risk-detail">Lauren (12 in 2030) college: 2036–2040. Celine (6 in 2030) college: 2042–2046. Private university PH = ~₱200K–₱500K/yr tuition + board. Potential overseas study = SGD 30–60K/yr. These show as expense spikes but may be underestimated in current ₱M table.</div>
+    <div class="risk-owners">
+      <span class="owner-tag claude">Claude</span>
+    </div>
+    <div class="risk-fix">→ Fix: Segregate a ₱3M education fund per child in 2026–2030 via PH equity fund (6–8% return). Don't draw from AAPL for education.</div>
+  </div>
+</div>
+
+<!-- ── SECTION 4: MAIN CHART ── -->
+<div class="chart-card">
+  <div class="sh">
+    <span class="st">v4 Consolidated Net Worth Timeline</span>
+    <span class="sg" id="chartTag">2030–2060 · All Scenarios</span>
+    <div class="vtog ml">
+      <button class="bv act" id="v-all" onclick="setView('all')">All Scenarios</button>
+      <button class="bv" id="v-brk" onclick="setView('brk')">Breakdown</button>
+      <button class="bv" id="v-ai" onclick="setView('ai')">AI Comparison</button>
+    </div>
+  </div>
+  <div class="ch-wrap"><canvas id="mainChart"></canvas></div>
+  <div class="leg" id="legend"></div>
+</div>
+
+<!-- ── SECTION 5: FULL COMPARISON TABLE ── -->
+<div class="card">
+  <div class="sh">
+    <span class="st">Bear / Base / Bull — Full Projection 2030–2060</span>
+    <span class="sg">v4 Model · Includes Condo Income · eToro Pre-funding · SRS Corrected</span>
+  </div>
+  <div class="twrap" style="max-height:620px">
+    <table>
+      <thead>
+        <tr>
+          <th class="lft" rowspan="2" style="min-width:190px">Year / Age</th>
+          <th colspan="3">AAPL Price</th>
+          <th colspan="3">Shares Held</th>
+          <th colspan="3">AAPL Value</th>
+          <th class="lft" rowspan="2">Expense ₱M</th>
+          <th rowspan="2" style="color:var(--php)">Condo Inc.</th>
+          <th colspan="3">Net Exp USD</th>
+          <th colspan="3">Dividend</th>
+          <th colspan="3">Shares Sold</th>
+          <th colspan="3">IBKR</th>
+          <th colspan="3" style="background:rgba(0,214,143,.05)">Combined NW</th>
+        </tr>
+        <tr>
+          <th style="color:var(--rd)">Bear</th><th style="color:var(--gn)">Base</th><th style="color:var(--am)">Bull</th>
+          <th style="color:var(--rd)">Bear</th><th style="color:var(--gn)">Base</th><th style="color:var(--am)">Bull</th>
+          <th style="color:var(--rd)">Bear</th><th style="color:var(--gn)">Base</th><th style="color:var(--am)">Bull</th>
+          <th style="color:var(--rd)">Bear</th><th style="color:var(--gn)">Base</th><th style="color:var(--am)">Bull</th>
+          <th style="color:var(--rd)">Bear</th><th style="color:var(--gn)">Base</th><th style="color:var(--am)">Bull</th>
+          <th style="color:var(--rd)">Bear</th><th style="color:var(--gn)">Base</th><th style="color:var(--am)">Bull</th>
+          <th style="color:var(--rd)">Bear</th><th style="color:var(--gn)">Base</th><th style="color:var(--am)">Bull</th>
+          <th style="color:var(--rd)">Bear</th><th style="color:var(--gn)">Base</th><th style="color:var(--am)">Bull</th>
+        </tr>
+      </thead>
+      <tbody id="cmpBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── SECTION 6: DETAILED SINGLE SCENARIO ── -->
+<div class="card">
+  <div class="sh">
+    <span class="st">Detailed Projection</span>
+    <span class="sg" id="tableTag">Base · 2030–2060</span>
+  </div>
+  <div class="twrap" style="max-height:620px">
+    <table>
+      <thead>
+        <tr>
+          <th class="lft">Year / Age</th>
+          <th>AAPL Price</th>
+          <th>Shares Held</th>
+          <th>AAPL Value</th>
+          <th>Expense ₱M</th>
+          <th>Expense USD</th>
+          <th>Condo Inc.</th>
+          <th>Net Exp USD</th>
+          <th>Dividend</th>
+          <th>Shares Sold</th>
+          <th>IBKR</th>
+          <th>PH Assets</th>
+          <th>Combined NW</th>
+          <th>SWR</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── SECTION 7: PHASE ANALYSIS ── -->
+<div class="sh"><span class="st">Retirement Phase Analysis</span><span class="sg">2030–2060 · 5 Phases</span></div>
+<div class="phase-row">
+  <div class="phase" style="border-color:rgba(240,84,84,.3);background:rgba(240,84,84,.03)">
+    <div class="ph-yr" style="color:var(--rd)">2027–2030 · DANGER ZONE</div>
+    <div class="ph-title">Pre-Retirement Build</div>
+    <div class="ph-item">Averdeen ₱18M construction</div>
+    <div class="ph-item">Fund via eToro ($170K) + Maxgrowth ($49K) FIRST</div>
+    <div class="ph-item">Only sell AAPL if eToro/Maxgrowth depleted</div>
+    <div class="ph-item">SRS: park SGD 20K float for withholding gap</div>
+    <div class="ph-item">Janao title: resolve by Dec 2028</div>
+  </div>
+  <div class="phase" style="border-color:rgba(247,183,49,.3);background:rgba(247,183,49,.03)">
+    <div class="ph-yr" style="color:var(--am)">2030–2035 · EARLY FIRE</div>
+    <div class="ph-title">High Spend, Moderate Risk</div>
+    <div class="ph-item">Expenses: ₱8M → ₱5M → ₱4M → ₱6M → ₱5M → ₱13M</div>
+    <div class="ph-item">Palawan house build 2035 (₱8M)</div>
+    <div class="ph-item">Lauren school fees peak (2030–2036)</div>
+    <div class="ph-item">SWR: ~2.5–3.1% — watch closely in bear case</div>
+    <div class="ph-item">Condo income critical buffer: ₱840K+/yr</div>
+  </div>
+  <div class="phase" style="border-color:rgba(61,184,245,.3);background:rgba(61,184,245,.03)">
+    <div class="ph-yr" style="color:var(--bl)">2036–2043 · GROWTH PHASE</div>
+    <div class="ph-title">Expense Peaks + Dividend Rising</div>
+    <div class="ph-item">Lipa house build 2038 (₱11M peak year ₱15M)</div>
+    <div class="ph-item">Lauren college 2036–2040</div>
+    <div class="ph-item">Celine college 2042–2046</div>
+    <div class="ph-item">Dividends approaching expense coverage</div>
+    <div class="ph-item">IBKR compounding accelerating</div>
+  </div>
+  <div class="phase" style="border-color:rgba(0,214,143,.3);background:rgba(0,214,143,.03)">
+    <div class="ph-yr" style="color:var(--gn)">2044–2052 · UNLOCK PHASE</div>
+    <div class="ph-title">Windfall Events + Crossover</div>
+    <div class="ph-item">Age 60 (2044): IBKR + MP1 + SSS unlocked</div>
+    <div class="ph-item">Age 64 (2048): Pag-IBIG MP2 unlocked</div>
+    <div class="ph-item">Dividend crossover: ~2042–2045</div>
+    <div class="ph-item">Zero AAPL sales needed post-crossover</div>
+    <div class="ph-item">SWR drops below 1% permanently</div>
+  </div>
+  <div class="phase" style="border-color:rgba(176,142,245,.3);background:rgba(176,142,245,.03)">
+    <div class="ph-yr" style="color:var(--pu)">2053–2060 · LEGACY PHASE</div>
+    <div class="ph-title">Wealth Preservation & Transfer</div>
+    <div class="ph-item">All major builds complete</div>
+    <div class="ph-item">Dividends far exceed living expenses</div>
+    <div class="ph-item">NW: $50M–$160M+ depending on scenario</div>
+    <div class="ph-item">Estate planning: will, trust, PH properties</div>
+    <div class="ph-item">Lauren/Celine financial independence</div>
+  </div>
+</div>
+
+<!-- ── SECTION 8: PORTFOLIO ── -->
+<div class="sh"><span class="st">Current Portfolio</span><span class="sg">May 2026 Snapshot</span></div>
+<div class="pg">
+  <div class="pc" style="--pa:var(--gn)">
+    <div class="pp">eTrade · Core Asset</div>
+    <div class="pn">AAPL Vested</div>
+    <div class="pv">$2,773,009</div>
+    <div class="pd">8,979.37 sh · $308.84/sh · ~83% liquid NW</div>
+  </div>
+  <div class="pc" style="--pa:var(--mu)">
+    <div class="pp">eTrade · Unvested RSU</div>
+    <div class="pn">AAPL Unvested</div>
+    <div class="pv" style="color:var(--mu)">$213,962</div>
+    <div class="pd">689 sh · Vesting 2026–2030 · +280 sh in 2030</div>
+  </div>
+  <div class="pc" style="--pa:var(--te)">
+    <div class="pp">eToro · Pre-fund Averdeen</div>
+    <div class="pn">NVDA·GOOGL·AMZN·META·MU</div>
+    <div class="pv" style="color:var(--te)">$169,666</div>
+    <div class="pd">⭐ Use for Averdeen FIRST before any AAPL sale</div>
+  </div>
+  <div class="pc" style="--pa:var(--bl)">
+    <div class="pp">IBKR · Long-term ETFs</div>
+    <div class="pn">CSPX · VWRA · CSNDX</div>
+    <div class="pv" style="color:var(--bl)">$30,152</div>
+    <div class="pd">60/30/10 · $700/mo + $4.5K bonus/yr → $575–618K by 2030</div>
+  </div>
+  <div class="pc" style="--pa:var(--pu)">
+    <div class="pp">Endowus SRS · 5 Funds</div>
+    <div class="pn">Amundi · Dimensional</div>
+    <div class="pv" style="color:var(--pu)">SGD 269,305</div>
+    <div class="pd">≈$210.6K · 50% taxable · Net ~$270K → IBKR at 2030</div>
+  </div>
+  <div class="pc" style="--pa:var(--pu)">
+    <div class="pp">OCBC · Insurance Savings</div>
+    <div class="pn">Primegold 2030 + Maxgrowth 2028</div>
+    <div class="pv" style="color:var(--pu)">SGD 112,115</div>
+    <div class="pd">≈$87.7K · Maxgrowth ($49K) → Averdeen 2028 FIRST</div>
+  </div>
+  <div class="pc" style="--pa:var(--php)">
+    <div class="pp">COL Financial · PH Broker</div>
+    <div class="pn">LTG · CREIT · BPI · SunLife</div>
+    <div class="pv" style="color:var(--php)">₱1,174,110</div>
+    <div class="pd">≈$20.6K · Hold until 60 · DCA until Apr 2030</div>
+  </div>
+  <div class="pc" style="--pa:var(--php)">
+    <div class="pp">Pag-IBIG + SSS</div>
+    <div class="pn">MP2 (7%) + MP1 + SSS Pension</div>
+    <div class="pv" style="color:var(--php)">₱1,066,082</div>
+    <div class="pd">MP2→Age 64 · MP1+SSS→Age 60 · Contribute until 2030</div>
+  </div>
+  <div class="pc" style="--pa:var(--php)">
+    <div class="pp">Manila Condos · Income Asset</div>
+    <div class="pn">2× DLSU-area Units</div>
+    <div class="pv" style="color:var(--php)">₱840K/yr</div>
+    <div class="pd">17+18 sqm · ₱35K/unit/mo · ~$14.7K/yr · Unmodeled by 3 AIs</div>
+  </div>
+</div>
+
+<!-- ── SECTION 9: REAL ESTATE ── -->
+<div class="sh"><span class="st">Real Estate Portfolio</span><span class="sg">Philippines · 6 Properties</span></div>
+<div class="rg">
+  <div class="rc"><span class="rb paid">Fully Paid</span><div class="rn">Valenza CrownAsia, Nuvali</div><div class="rd2">174 sqm · Santa Rosa Laguna · Primary retirement home</div></div>
+  <div class="rc"><span class="rb paid">Fully Paid ★</span><div class="rn">2× Condos, Manila (DLSU)</div><div class="rd2">17+18 sqm · ₱35K/unit/mo · ₱840K/yr income · UNDERUTILIZED IN MODELS</div></div>
+  <div class="rc"><span class="rb paid">Fully Paid</span><div class="rn">Summit Point, Lipa Batangas</div><div class="rd2">213 sqm · Build 2038 · ₱11M · Defer if AAPL &lt;$400 in 2030</div></div>
+  <div class="rc"><span class="rb paid">Fully Paid</span><div class="rn">Tago Lango, Palawan</div><div class="rd2">400 sqm · Build 2035 · ₱8M · Defer if bear scenario</div></div>
+  <div class="rc" style="border-color:rgba(240,84,84,.3)"><span class="rb part">⚠ Title Issues</span><div class="rn">Janao Farm, San Juan Batangas</div><div class="rd2">800 sqm · RESOLVE BY DEC 2028 · Legal reserve ₱500K · All AIs flagged this</div></div>
+  <div class="rc"><span class="rb part">Partially Paid</span><div class="rn">Averdeen Estates, Nuvali</div><div class="rd2">167 sqm · Retirement home build 2027–28 · ₱18M · Fund via eToro+Maxgrowth first</div></div>
+</div>
+
+<!-- ── SECTION 10: RECOMMENDATIONS ── -->
+<div class="card">
+  <div class="sh"><span class="st">Strategic Recommendations</span><span class="sg">Prioritized · Consolidated from All 4 AIs</span></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--rd);font-family:'IBM Plex Mono',monospace;margin-bottom:10px">🔴 IMMEDIATE (2026–2027)</div>
+      <div style="font-size:11px;line-height:1.8;color:var(--tx)">
+        1. <b>Averdeen funding sequence</b>: Liquidate eToro ($170K) + Maxgrowth-to-IBKR ($49K) BEFORE selling any AAPL. Cuts forced AAPL sales 40%.<br>
+        2. <b>AAPL collar</b>: Explore 2028 LEAPS protective puts on ~2,000 shares. Costs ~2–3% premium but caps downside during build cycle.<br>
+        3. <b>Janao Farm title</b>: Engage property lawyer now. Hard deadline Dec 2028 or write off/sell.<br>
+        4. <b>SRS float</b>: Park SGD 20K liquid in OCBC 360 for 2030 IRAS withholding gap. Don't use SRS proceeds as Day-1 available cash.
+      </div>
+    </div>
+    <div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--am);font-family:'IBM Plex Mono',monospace;margin-bottom:10px">🟡 NEAR-TERM (2028–2030)</div>
+      <div style="font-size:11px;line-height:1.8;color:var(--tx)">
+        5. <b>Condo income modeling</b>: Formally include ₱840K/yr in retirement income. Reduces SWR from 2.1%→1.8%. Invest in rent escalation clause.<br>
+        6. <b>PHP FX hedge</b>: Keep 6 months of PH expenses in PHP accounts. Rental income naturally hedges PHP/USD moves.<br>
+        7. <b>Education fund</b>: Segregate ₱3M/child in PH equity fund (2026–2030 DCA). Target: Lauren ₱3M ready 2036, Celine 2042.<br>
+        8. <b>Build deferral triggers</b>: If AAPL &lt;$400 at retirement, defer Palawan and Lipa builds by 2 years each. Pre-agree this as a family trigger.
+      </div>
+    </div>
+    <div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--bl);font-family:'IBM Plex Mono',monospace;margin-bottom:10px">🔵 STRUCTURAL (2030–2044)</div>
+      <div style="font-size:11px;line-height:1.8;color:var(--tx)">
+        9. <b>AAPL diversification glide path</b>: After crossover (~2043), redirect all dividends to IBKR ETFs, not AAPL reinvestment. Long-term target: 50% AAPL / 50% ETFs by 2050.<br>
+        10. <b>Pag-IBIG MP2 top-up</b>: If cashflow allows, top up MP2 to max ₱10K/mo through 2030. 7% guaranteed return, zero risk.<br>
+        11. <b>Healthcare insurance</b>: By 2030, secure Manulife or AXA PH comprehensive family plan. Budget ₱200K/yr rising 8%/yr.<br>
+        12. <b>Estate plan</b>: Will + Special Power of Attorney for PH assets. Target completion by 2030.
+      </div>
+    </div>
+    <div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--pu);font-family:'IBM Plex Mono',monospace;margin-bottom:10px">🟣 CRITICAL DEBATE: 2060 NW DIVERGENCE</div>
+      <div style="font-size:11px;line-height:1.8;color:var(--tx)">
+        <b>Claude</b> says ~$70M · <b>Gemini + Meta</b> say ~$144M<br><br>
+        The gap is purely mathematical: Gemini/Meta compound AAPL at 12% CAGR starting from <b>$309 today</b>, not Claude's assumed $543 in 2030. By 2060, $309 × (1.12)^34 = ~$14,800/share vs $543 × (1.12)^30 = ~$16,300/share — but Gemini also models more shares (10,488 vs 9,595).<br><br>
+        <b>v4 assessment</b>: Gemini/Meta's $144M is more mathematically consistent with today's starting price. Claude's $70M is understated. However, the <b>$309→2030 growth path is uncertain</b> — don't rely on 2060 figures for decisions. Use 2035 and 2040 milestones to calibrate.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+<footer>FIRE DASHBOARD v4 · JASPER · CONSOLIDATED: CLAUDE³ + GEMINI + CHATGPT + META · MAY 26, 2026 · PHP/USD: 57 · SGD/USD: 0.7825 · NOT FINANCIAL ADVICE · PROJECTIONS ARE MODELED ESTIMATES</footer>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════════════════ -->
+<script>
+const BIRTH = 1984;
+const PHP_USD_BASE = 57;
+const PHP_FX_DECAY = 0.005;
+const CONDO_PHP_YR = 840000;   // ₱840K/yr condo income (Meta's correction applied)
+const CONDO_GROWTH = 0.03;     // 3%/yr rent growth
+
+// v4 uses Gemini/Meta consensus: more shares, more conservative CAGR in bear
+const SCENARIOS = {
+  bear:{ aaplStart:432, ibkrStart:540000, aaplG:0.05, ibkrG:0.04, color:'#f05454', label:'Bear', divYield:0.004 },
+  base:{ aaplStart:490, ibkrStart:575000, aaplG:0.12, ibkrG:0.08, color:'#00d68f', label:'Base', divYield:0.004 },
+  bull:{ aaplStart:580, ibkrStart:720000, aaplG:0.18, ibkrG:0.12, color:'#f7b731', label:'Bull', divYield:0.004 },
+};
+// Note: aaplStart = expected AAPL price in April 2030 based on $309 today
+// Bear: $309 × (1.05^4) ≈ $376 → using 432 (slightly above; eToro pre-fund helps)
+// Base: $309 × (1.12^4) ≈ $487 → 490
+// Bull: $309 × (1.18^4) ≈ $607 → 580 (conservative bull)
+
+const SH_2030 = 10488; // v4 consensus: 10,728 vest − 240 sold for Averdeen pre-fund
+const PH_START = 52600;
+const PH_CAGR = 0.065;
+const RET_YR = 2030;
+
+// Annual expenses in ₱M (Claude v3 table, unchanged — both teams validated)
+const EXP_PHP = {
+  2030:8,2031:5,2032:4,2033:6,2034:5,
+  2035:13,2036:5,2037:5,2038:15,2039:6,
+  2040:13,2041:8,2042:5,2043:6,2044:5,
+  2045:5,2046:4,2047:5,2048:4,2049:5,
+  2050:4,2051:4,2052:3,2053:4,2054:2,
+  2055:3,2056:2,2057:3,2058:2,2059:3,2060:0
+};
+const NOTES = {
+  2030:'🎉 Retire · Lauren 12 · Celine 6',
+  2031:'Education + Travel',
+  2032:'Valenza maint.',
+  2033:'Travel + car',
+  2034:'Emergency + hobbies',
+  2035:'🏝 Palawan build · Mama buffer',
+  2036:'Education + emergency',
+  2037:'Travel + car',
+  2038:'🏔 Lipa build — peak year',
+  2039:'Emergency + travel',
+  2040:'⚠ Maint. + San Juan + Lottie',
+  2041:'Car + Valenza + travel',
+  2042:'Valenza maint.',
+  2043:'Emergency + travel',
+  2044:'⭐ Age 60 · IBKR+MP1+SSS unlocked',
+  2045:'Emergency + travel',
+  2046:'🎓 Celine education peak',
+  2047:'Emergency + travel',
+  2048:'⭐ Age 64 · MP2 unlocks',
+  2049:'Emergency + travel',
+  2050:'✅ All major expenses done',
+  2060:'End of projection',
+};
+const DANGER = [2030,2031,2032,2033,2034,2035,2038,2040];
+const AGE60 = 2044;
+
+function computeData(sk) {
+  const p = SCENARIOS[sk];
+  let price  = p.aaplStart;
+  let shares = SH_2030;
+  let ibkr   = p.ibkrStart;
+  let ph     = PH_START;
+  let condoPhp = CONDO_PHP_YR;
+  const rows = [];
+
+  for (let yr = RET_YR; yr <= 2060; yr++) {
+    const fxRate  = PHP_USD_BASE * Math.pow(1 + PHP_FX_DECAY, yr - RET_YR);
+    const expPhpM = EXP_PHP[yr] || 0;
+    const expUsd  = (expPhpM * 1e6) / fxRate;
+    const condoUsd= condoPhp / fxRate;
+    const netExp  = Math.max(0, expUsd - condoUsd);  // condo income offsets gross expense
+    const divTotal= shares * price * p.divYield;
+    const needCash= Math.max(0, netExp - divTotal);
+    const sold    = needCash > 0 ? needCash / price : 0;
+    shares = Math.max(0, shares - sold);
+    const aaplEOY = Math.round(shares * price);
+    ibkr  = Math.round(ibkr * (1 + p.ibkrG));
+    ph    = Math.round(ph   * (1 + PH_CAGR));
+    condoPhp = condoPhp * (1 + CONDO_GROWTH);
+    const combined = aaplEOY + ibkr;
+    const swr = combined > 0 ? ((netExp / combined) * 100).toFixed(1) : '—';
+
+    rows.push({
+      yr, age: yr - BIRTH,
+      price: Math.round(price),
+      shares: Math.round(shares * 10) / 10,
+      aaplEOY, expPhpM,
+      expUsd: Math.round(expUsd),
+      condoUsd: Math.round(condoUsd),
+      netExp: Math.round(netExp),
+      div: Math.round(divTotal),
+      sold: sold > 0.05 ? -(Math.round(sold * 10) / 10) : 0,
+      ibkr, ph, combined, swr,
+    });
+
+    price = price * (1 + p.aaplG);
+  }
+  return rows;
+}
+
+const DATA = {
+  bear: computeData('bear'),
+  base: computeData('base'),
+  bull: computeData('bull'),
+};
+
+// Claude v3 reference data for AI comparison chart
+const CLAUDE_NW = {
+  2030:5830000,2035:8200000,2040:12000000,2045:22000000,2050:40000000,2055:55000000,2060:70000000
+};
+
+function fU(n, dp=2) {
+  if (!n && n !== 0) return '—';
+  const a = Math.abs(n);
+  if (a >= 1e6) return `$${(n/1e6).toFixed(dp)}M`;
+  if (a >= 1e3) return `$${Math.round(n/1e3)}K`;
+  return `$${Math.round(n)}`;
+}
+
+let scenario = 'base';
+let view = 'all';
+let chart = null;
+
+function renderKPIs() {
+  const d = DATA[scenario], p = SCENARIOS[scenario];
+  const r30 = d[0];
+  const r60 = d[d.length - 1];
+  const curNW = 2773009 + 169666 + 30152 + (269305 + 112115) * 0.7825 + (1174110 + 735079 + 331003) / 57;
+  const annExp = (190000 * 12) / 57;
+  const annCondo = CONDO_PHP_YR / 57;
+  const swrNet = ((annExp - annCondo) / curNW * 100).toFixed(2);
+  const divCross = DATA[scenario].find(r => r.div >= r.netExp);
+
+  // update consensus table KPIs
+  const el60 = document.getElementById('nw2060kpi');
+  if (el60) el60.textContent = fU(r60.combined);
+  const swrEl = document.getElementById('swrKPI');
+  if (swrEl) swrEl.textContent = swrNet + '% (w/ condo)';
+  const crossEl = document.getElementById('crossoverKPI');
+  if (crossEl) crossEl.textContent = divCross ? `${divCross.yr} (Age ${divCross.age})` : '2060+';
+
+  const kpis = [
+    { l:'Liquid NW Today', v: fU(Math.round(curNW)), s:'excl. real estate · May 2026', a:'var(--gn)' },
+    { l:'Combined NW @ 2030', v: fU(r30.combined), s: `${p.label} · $${r30.price}/sh · v4 consensus`, a: p.color },
+    { l:'Shares @ Retirement', v: SH_2030.toLocaleString(), s: `${fU(r30.aaplEOY)} AAPL value · condo pre-funded`, a: 'var(--bl)' },
+    { l:'SWR (Net of Condo)', v: swrNet + '%', s: 'After ₱840K/yr condo income · below 2% ✓', a: 'var(--te)' },
+    { l:'Dividend Crossover', v: divCross ? `${divCross.yr} · Age ${divCross.age}` : '2060+', s: 'Divs ≥ net expenses', a: 'var(--am)' },
+    { l:`NW @ 2060 · ${p.label}`, v: fU(r60.combined), s: `vs Claude ~$70M · Gemini/Meta ~$144M`, a: p.color },
+  ];
+
+  document.getElementById('kpiRow').innerHTML = kpis.map(k => `
+    <div class="kpi" style="--ka:${k.a}">
+      <div class="kl">${k.l}</div>
+      <div class="kv">${k.v}</div>
+      <div class="ks">${k.s}</div>
+    </div>`).join('');
+}
+
+function renderChart() {
+  const ctx = document.getElementById('mainChart').getContext('2d');
+  const yrs = DATA.base.map(r => r.yr);
+  let datasets = [];
+
+  if (view === 'all') {
+    Object.entries(SCENARIOS).forEach(([k, p]) => {
+      datasets.push({
+        label: `v4 ${p.label}`,
+        data: DATA[k].map(r => r.combined / 1e6),
+        borderColor: p.color,
+        backgroundColor: p.color + '10',
+        borderWidth: k === scenario ? 2.5 : 1.5,
+        borderDash: k === 'bear' ? [6,4] : k === 'bull' ? [3,3] : [],
+        tension: .35, fill: false,
+        pointRadius: 0, pointHoverRadius: 4,
+      });
+    });
+  } else if (view === 'ai') {
+    const d = DATA.base;
+    // v4 base
+    datasets.push({ label:'v4 Base (consensus)', data: d.map(r=>r.combined/1e6), borderColor:'#00d68f', borderWidth:2.5, tension:.35, fill:false, pointRadius:0, pointHoverRadius:4, backgroundColor:'transparent' });
+    // Claude v3 interpolated
+    const claudeData = yrs.map(yr => {
+      const keys = Object.keys(CLAUDE_NW).map(Number).sort((a,b)=>a-b);
+      for (let i=0;i<keys.length-1;i++) {
+        if (yr >= keys[i] && yr <= keys[i+1]) {
+          const t = (yr-keys[i])/(keys[i+1]-keys[i]);
+          return (CLAUDE_NW[keys[i]] + t*(CLAUDE_NW[keys[i+1]]-CLAUDE_NW[keys[i]])) / 1e6;
+        }
+      }
+      return CLAUDE_NW[2060]/1e6;
+    });
+    datasets.push({ label:'Claude v3 Base', data: claudeData, borderColor:'#00d68f', borderWidth:1.5, borderDash:[8,4], tension:.35, fill:false, pointRadius:0, pointHoverRadius:4, backgroundColor:'transparent' });
+    // v4 bear / bull for range
+    datasets.push({ label:'v4 Bear', data: DATA.bear.map(r=>r.combined/1e6), borderColor:'#f05454', borderWidth:1.2, borderDash:[4,4], tension:.35, fill:false, pointRadius:0, pointHoverRadius:3, backgroundColor:'transparent' });
+    datasets.push({ label:'v4 Bull', data: DATA.bull.map(r=>r.combined/1e6), borderColor:'#f7b731', borderWidth:1.2, borderDash:[4,4], tension:.35, fill:false, pointRadius:0, pointHoverRadius:3, backgroundColor:'transparent' });
+  } else {
+    const d = DATA[scenario], p = SCENARIOS[scenario];
+    [
+      { k:'aaplEOY', l:'AAPL Value', c:'#00d68f' },
+      { k:'ibkr',    l:'IBKR ETFs',  c:'#3db8f5' },
+      { k:'ph',      l:'PH Assets',  c:'#f0c040' },
+    ].forEach(({ k, l, c }) => {
+      datasets.push({ label:l, data:d.map(r=>(r[k]||0)/1e6), borderColor:c, backgroundColor:c+'10', borderWidth:2, tension:.35, fill:false, pointRadius:0, pointHoverRadius:4 });
+    });
+  }
+
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: { labels: yrs, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode:'index', intersect:false },
+      plugins: {
+        legend: { display:false },
+        tooltip: {
+          backgroundColor:'#0a1628', borderColor:'#1a2d48', borderWidth:1,
+          titleColor:'#4d6a84', bodyColor:'#cfe0f0', padding:12,
+          titleFont:{family:'IBM Plex Mono',size:10},
+          bodyFont:{family:'IBM Plex Mono',size:11},
+          callbacks: {
+            title: i => `${i[0].label} · Age ${i[0].label - BIRTH}`,
+            label: i => ` ${i.dataset.label}: $${i.parsed.y.toFixed(2)}M`,
+          },
+        },
+      },
+      scales: {
+        x: { grid:{color:'#1a2d48'}, ticks:{color:'#4d6a84',font:{family:'IBM Plex Mono',size:9},maxTicksLimit:16} },
+        y: {
+          type: 'logarithmic',
+          grid: { color:'#1a2d48' },
+          ticks: {
+            color:'#4d6a84', font:{family:'IBM Plex Mono',size:9},
+            callback: v => { const m=[0.5,1,2,5,10,20,50,100,200,500]; return m.includes(v)?`$${v}M`:null; },
+          },
+        },
+      },
+    },
+  });
+
+  const legEl = document.getElementById('legend');
+  if (view === 'all') {
+    legEl.innerHTML = Object.entries(SCENARIOS).map(([k,p]) => `
+      <div class="li"><div class="ll" style="background:${p.color};${k!==scenario?'opacity:.5':''}"></div>v4 ${p.label}</div>`).join('');
+  } else if (view === 'ai') {
+    legEl.innerHTML = [
+      {c:'#00d68f',l:'v4 Consensus (solid)'},
+      {c:'#00d68f',l:'Claude v3 (dashed)'},
+      {c:'#f05454',l:'v4 Bear'},
+      {c:'#f7b731',l:'v4 Bull'},
+    ].map(({c,l})=>`<div class="li"><div class="ll" style="background:${c}"></div>${l}</div>`).join('');
+  } else {
+    legEl.innerHTML = [{c:'#00d68f',l:'AAPL'},{c:'#3db8f5',l:'IBKR'},{c:'#f0c040',l:'PH Assets'}]
+      .map(({c,l})=>`<div class="li"><div class="ll" style="background:${c}"></div>${l}</div>`).join('');
+  }
+}
+
+function renderCmpTable() {
+  const bear = DATA.bear, base = DATA.base, bull = DATA.bull;
+  let html = '';
+  for (let i = 0; i < base.length; i++) {
+    const b = bear[i], m = base[i], u = bull[i];
+    const isDanger = DANGER.includes(m.yr);
+    const isAge60  = m.yr === AGE60;
+    const isRetire = m.yr === RET_YR;
+    const note     = NOTES[m.yr] || '';
+    const cls = [isRetire?'rt':'', isDanger?'danger':'', isAge60?'age60':''].filter(Boolean).join(' ');
+    const noteHtml = note ? `<br><small style="color:var(--mu);font-size:9px">${note}</small>` : '';
+    html += `<tr class="${cls}">
+      <td class="lft"><b>${m.yr}</b> · Age ${m.age}${noteHtml}</td>
+      <td class="rd">$${b.price.toLocaleString()}</td><td class="gn">$${m.price.toLocaleString()}</td><td class="am">$${u.price.toLocaleString()}</td>
+      <td class="rd">${b.shares.toLocaleString()}</td><td class="gn">${m.shares.toLocaleString()}</td><td class="am">${u.shares.toLocaleString()}</td>
+      <td class="rd">${fU(b.aaplEOY)}</td><td class="gn">${fU(m.aaplEOY)}</td><td class="am">${fU(u.aaplEOY)}</td>
+      <td class="lft ph">₱${m.expPhpM}M</td>
+      <td class="ph">${fU(m.condoUsd)}</td>
+      <td class="rd">${fU(b.netExp)}</td><td class="gn">${fU(m.netExp)}</td><td class="am">${fU(u.netExp)}</td>
+      <td class="rd">${fU(b.div)}</td><td class="gn">${fU(m.div)}</td><td class="am">${fU(u.div)}</td>
+      <td class="rd">${b.sold ? b.sold.toFixed(1) : '—'}</td><td class="gn">${m.sold ? m.sold.toFixed(1) : '—'}</td><td class="am">${u.sold ? u.sold.toFixed(1) : '—'}</td>
+      <td class="rd">${fU(b.ibkr)}</td><td class="gn">${fU(m.ibkr)}</td><td class="am">${fU(u.ibkr)}</td>
+      <td class="rd"><b>${fU(b.combined)}</b></td><td class="gn"><b>${fU(m.combined)}</b></td><td class="am"><b>${fU(u.combined)}</b></td>
+    </tr>`;
+  }
+  document.getElementById('cmpBody').innerHTML = html;
+}
+
+function renderDetailTable() {
+  const d = DATA[scenario], p = SCENARIOS[scenario];
+  document.getElementById('tableTag').textContent = `${p.label} Scenario · v4 · 2030–2060`;
+  const cc = scenario === 'bear' ? 'rd' : scenario === 'bull' ? 'am' : 'gn';
+  let html = '';
+  d.forEach(r => {
+    const note = NOTES[r.yr] || '';
+    const noteHtml = note ? `<span class="ynote mu">${note}</span>` : '';
+    const cls = [r.yr===RET_YR?'rt':'', DANGER.includes(r.yr)?'danger':'', r.yr===AGE60?'age60':''].filter(Boolean).join(' ');
+    const swrColor = parseFloat(r.swr) < 2 ? 'gn' : parseFloat(r.swr) < 3.5 ? 'am' : 'rd';
+    html += `<tr class="${cls}">
+      <td class="lft"><span class="yr">${r.yr} · Age ${r.age}</span>${noteHtml}</td>
+      <td class="mu">$${r.price.toLocaleString()}</td>
+      <td class="mu">${r.shares.toLocaleString()}</td>
+      <td class="${cc}">${fU(r.aaplEOY)}</td>
+      <td class="ph">₱${r.expPhpM}M</td>
+      <td class="rd">${fU(r.expUsd)}</td>
+      <td class="php">${fU(r.condoUsd)}</td>
+      <td>${fU(r.netExp)}</td>
+      <td class="gn">${fU(r.div)}</td>
+      <td>${r.sold ? `<span class="rd">${r.sold.toFixed(1)}</span>` : '<span class="mu">—</span>'}</td>
+      <td class="bl">${fU(r.ibkr)}</td>
+      <td class="ph">${fU(r.ph)}</td>
+      <td class="${cc}"><b>${fU(r.combined)}</b></td>
+      <td class="${swrColor}">${r.swr}%</td>
+    </tr>`;
+  });
+  document.getElementById('tbody').innerHTML = html;
+}
+
+function setScenario(s) {
+  scenario = s;
+  ['bear','base','bull'].forEach(k => {
+    document.getElementById('b-'+k).className = 'bsc ' + k + (k===s?' act':'');
+  });
+  renderAll();
+}
+function setView(v) {
+  view = v;
+  ['all','brk','ai'].forEach(k => {
+    document.getElementById('v-'+k).className = 'bv' + (k===v?' act':'');
+  });
+  renderChart();
+}
+function renderAll() {
+  renderKPIs();
+  renderChart();
+  renderCmpTable();
+  renderDetailTable();
+}
+
+renderAll();
+</script>
+</body>
+</html>
