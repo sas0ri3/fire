@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔥 FIRE V5 · Jasper · April 2030</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050d1a;--s1:#0a1628;--s2:#0f1e38;--s3:#152442;--bd:#1a2d48;
+  --tx:#cfe0f0;--mu:#4d6a84;--mu2:#7a9ab8;
+  --gn:#00d68f;--gn2:#34f5b0;--bl:#3db8f5;--am:#f7b731;
+  --rd:#f05454;--pu:#b08ef5;--te:#2de3bf;--php:#f0c040;
+  --sb:255px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:14px}
+body{background:var(--bg);color:var(--tx);font-family:'Bricolage Grotesque',sans-serif;line-height:1.5;display:flex;min-height:100vh;overflow-x:hidden}
+
+/* ══ SIDEBAR ══ */
+#sb{
+  width:var(--sb);min-width:var(--sb);flex-shrink:0;
+  background:var(--s1);border-right:1px solid var(--bd);
+  height:100vh;position:fixed;top:0;left:0;
+  overflow-y:auto;overflow-x:hidden;
+  display:flex;flex-direction:column;z-index:100;
+}
+#sb::-webkit-scrollbar{width:4px}
+#sb::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+
+.sb-brand{
+  padding:18px 16px 14px;border-bottom:1px solid var(--bd);
+  background:linear-gradient(170deg,#050d1a 0%,#081728 100%);
+  position:relative;overflow:hidden;
+}
+.sb-brand::after{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(0,214,143,.06) 0%,transparent 70%);pointer-events:none}
+.sb-fire{font-size:9px;letter-spacing:3px;color:var(--gn);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;margin-bottom:4px}
+.sb-title{font-size:15px;font-weight:800;color:#fff;line-height:1.2}
+.sb-sub{font-size:9px;color:var(--mu);font-family:'IBM Plex Mono',monospace;margin-top:3px}
+
+/* Countdown */
+.sb-cdown{padding:10px 12px;border-bottom:1px solid var(--bd);display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.cd-unit{background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:6px 8px;text-align:center}
+.cd-n{font-size:20px;font-weight:800;color:var(--gn);font-family:'IBM Plex Mono',monospace;line-height:1}
+.cd-l{font-size:7px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-top:2px;font-family:'IBM Plex Mono',monospace}
+
+/* Sidebar groups */
+.sb-grp{padding:6px 12px 2px}
+.sb-grp-l{font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);font-family:'IBM Plex Mono',monospace;margin-bottom:5px}
+.sb-inputs{padding:0 10px 6px;display:flex;flex-direction:column;gap:4px}
+.inp-g{display:flex;flex-direction:column}
+.inp-g label{font-size:8px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;font-family:'IBM Plex Mono',monospace;padding-left:1px}
+.inp-g input{
+  background:var(--s2);border:1px solid var(--bd);border-radius:5px;
+  padding:5px 8px;color:var(--tx);font-size:11px;font-family:'IBM Plex Mono',monospace;width:100%;
+  transition:border-color .15s;
+}
+.inp-g input:focus{outline:none;border-color:var(--gn)}
+
+/* Scenario */
+.sb-scn{padding:2px 10px 6px}
+.scn-g{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:3px}
+.scn-b{padding:5px 0;border-radius:5px;border:none;background:transparent;color:var(--mu);font-size:9px;font-weight:700;cursor:pointer;letter-spacing:1px;text-align:center;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;transition:all .15s}
+.scn-b.bear.act{background:rgba(240,84,84,.2);color:var(--rd)}
+.scn-b.base.act{background:rgba(0,214,143,.2);color:var(--gn)}
+.scn-b.bull.act{background:rgba(247,183,49,.2);color:var(--am)}
+
+/* Buttons */
+.sb-btns{padding:4px 10px 8px;display:flex;flex-direction:column;gap:4px}
+.btn{padding:8px 12px;border-radius:7px;border:none;font-size:9px;font-weight:700;cursor:pointer;width:100%;letter-spacing:1px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;transition:opacity .15s}
+.btn-gn{background:var(--gn);color:#000}
+.btn-mu{background:var(--s2);color:var(--tx);border:1px solid var(--bd)}
+.btn:hover{opacity:.82}
+
+/* Notes */
+.sb-notes{margin:4px 10px 14px;background:rgba(0,214,143,.04);border:1px solid rgba(0,214,143,.18);border-radius:7px;padding:9px 10px;font-size:8.5px;line-height:1.6;color:var(--mu2);font-family:'IBM Plex Mono',monospace}
+.sb-notes-t{font-size:7px;font-weight:700;color:var(--gn);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px}
+
+/* ══ MAIN ══ */
+#main{
+  margin-left:var(--sb);
+  flex:1;width:calc(100% - var(--sb));
+  min-width:0;overflow-x:hidden;
+}
+
+/* Header */
+.hdr{
+  background:linear-gradient(170deg,#050d1a 0%,#081525 50%,#0a1c35 100%);
+  border-bottom:1px solid var(--bd);
+  padding:20px 28px 16px;
+  position:relative;overflow:hidden;
+}
+.hdr::after{content:'';position:absolute;top:-60px;right:-60px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,214,143,.04) 0%,transparent 70%);pointer-events:none}
+.hdr-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.hdr-brand{font-size:9px;letter-spacing:3px;color:var(--gn);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;margin-bottom:4px}
+.hdr-h1{font-size:22px;font-weight:800;color:#fff;line-height:1.15}
+.hdr-h1 em{color:var(--gn);font-style:normal}
+.hdr-sub{font-size:10px;color:var(--mu);font-family:'IBM Plex Mono',monospace;margin-top:3px}
+.badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.badge{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;border:1px solid;font-size:8px;font-family:'IBM Plex Mono',monospace;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.badge.ok{border-color:var(--gn);color:var(--gn);background:rgba(0,214,143,.07)}
+.badge.warn{border-color:var(--am);color:var(--am);background:rgba(247,183,49,.07)}
+.badge.crit{border-color:var(--rd);color:var(--rd);background:rgba(240,84,84,.07)}
+
+/* KPI row in header */
+.kpi-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.kpi{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;flex:1;min-width:140px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--kc,var(--gn))}
+.kl{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);font-family:'IBM Plex Mono',monospace;margin-bottom:4px}
+.kv{font-size:18px;font-weight:800;color:var(--kc,var(--gn));font-family:'IBM Plex Mono',monospace;line-height:1}
+.ks{font-size:9px;color:var(--mu);margin-top:3px;font-family:'IBM Plex Mono',monospace}
+
+/* Content wrap */
+.wrap{padding:18px 28px;width:100%}
+
+/* Section header */
+.sh{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.st{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx)}
+.sg{font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--mu);border:1px solid var(--bd);padding:2px 9px;border-radius:99px}
+.ml{margin-left:auto}
+.hg{height:1px;background:var(--bd);margin:18px 0}
+
+/* Cards */
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:18px 22px;margin-bottom:18px;width:100%}
+
+/* Grid */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+@media(max-width:1100px){.g5{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* Portfolio cards */
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:9px;margin-bottom:16px;width:100%}
+.pc{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:13px;position:relative;overflow:hidden;transition:border-color .2s}
+.pc:hover{border-color:var(--gn)}
+.pc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--pa,var(--gn)),transparent)}
+.pp{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);font-family:'IBM Plex Mono',monospace;margin-bottom:4px}
+.pn{font-size:11px;font-weight:700;margin-bottom:4px}
+.pv{font-size:16px;font-weight:800;font-family:'IBM Plex Mono',monospace;color:var(--pa,var(--gn))}
+.pd{font-size:8.5px;color:var(--mu);margin-top:3px;font-family:'IBM Plex Mono',monospace;line-height:1.4}
+
+/* Table */
+.twrap{overflow-x:auto;overflow-y:auto}
+.twrap::-webkit-scrollbar{width:4px;height:4px}
+.twrap::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+table{width:100%;border-collapse:collapse;white-space:nowrap}
+thead{position:sticky;top:0;z-index:8}
+th{background:var(--s2);border-bottom:1px solid var(--bd);padding:8px 10px;text-align:center;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);font-family:'IBM Plex Mono',monospace}
+th.l{text-align:left}
+td{padding:6px 10px;text-align:center;border-bottom:1px solid rgba(26,45,72,.45);font-family:'IBM Plex Mono',monospace;font-size:10px}
+td.l{text-align:left;font-family:'Bricolage Grotesque',sans-serif;font-size:10px}
+tr:hover td{background:rgba(21,36,66,.55)}
+tr.ret td{border-top:2px solid var(--gn)!important;background:rgba(0,214,143,.03)}
+tr.peak td{background:rgba(240,84,84,.03)}
+tr.a60 td{background:rgba(61,184,245,.03)}
+
+/* Scenario cards */
+.sc-card{border-radius:9px;padding:12px;border:1px solid;position:relative;overflow:hidden}
+.sc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.sc-card.bear{border-color:rgba(240,84,84,.3);background:rgba(240,84,84,.03)}.sc-card.bear::before{background:var(--rd)}
+.sc-card.base{border-color:rgba(0,214,143,.3);background:rgba(0,214,143,.03)}.sc-card.base::before{background:var(--gn)}
+.sc-card.bull{border-color:rgba(247,183,49,.3);background:rgba(247,183,49,.03)}.sc-card.bull::before{background:var(--am)}
+.sc-l{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;margin-bottom:4px}
+.sc-v{font-size:20px;font-weight:800;font-family:'IBM Plex Mono',monospace}
+.sc-row{display:flex;justify-content:space-between;font-size:9px;color:var(--mu);font-family:'IBM Plex Mono',monospace;padding:3px 0;border-bottom:1px solid var(--bd)}
+.sc-row:last-child{border-bottom:none}
+
+/* Phase */
+.phase-g{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:18px;width:100%}
+@media(max-width:1200px){.phase-g{grid-template-columns:repeat(2,1fr)}}
+.phase{border-radius:9px;padding:13px;border:1px solid var(--bd);background:var(--s1)}
+.ph-yr{font-size:8px;font-family:'IBM Plex Mono',monospace;color:var(--mu);margin-bottom:3px}
+.ph-title{font-size:11px;font-weight:700;margin-bottom:5px}
+.ph-item{font-size:9px;color:var(--mu);display:flex;gap:5px;margin-bottom:2px;line-height:1.4}
+.ph-item::before{content:'→';color:var(--bd);flex-shrink:0}
+
+/* Chart */
+.chart-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:18px 22px;margin-bottom:18px;width:100%}
+.ch-wrap{position:relative;height:320px;width:100%}
+.vtog{display:flex;gap:2px;background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:3px}
+.bv{padding:4px 12px;border-radius:5px;border:none;background:transparent;color:var(--mu);font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.8px;cursor:pointer;text-transform:uppercase;transition:all .15s}
+.bv.act{background:var(--s3);color:var(--tx)}
+.leg{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px}
+.li{display:flex;align-items:center;gap:6px;font-size:9px;color:var(--mu);font-family:'IBM Plex Mono',monospace}
+.ll{width:20px;height:2px;border-radius:2px}
+
+/* Donut */
+.dnt-wrap{display:flex;align-items:center;gap:14px}
+.legend{display:flex;flex-direction:column;gap:3px;min-width:0}
+.leg-i{display:flex;align-items:center;gap:5px;font-size:8.5px;color:var(--mu);font-family:'IBM Plex Mono',monospace}
+.leg-d{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* Risk cards */
+.risk-g{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:18px;width:100%}
+@media(max-width:1200px){.risk-g{grid-template-columns:1fr 1fr}}
+@media(max-width:800px){.risk-g{grid-template-columns:1fr}}
+.rc{border-radius:9px;padding:13px;border:1px solid var(--bd)}
+.rc.crit{border-color:rgba(240,84,84,.35);background:rgba(240,84,84,.03)}
+.rc.high{border-color:rgba(247,183,49,.3);background:rgba(247,183,49,.03)}
+.rc.med{border-color:rgba(61,184,245,.25);background:rgba(61,184,245,.02)}
+.rsev{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.rdot{width:7px;height:7px;border-radius:50%}
+.rc.crit .rdot{background:var(--rd)}.rc.high .rdot{background:var(--am)}.rc.med .rdot{background:var(--bl)}
+.rsl{font-size:7px;letter-spacing:2px;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;font-weight:700}
+.rc.crit .rsl{color:var(--rd)}.rc.high .rsl{color:var(--am)}.rc.med .rsl{color:var(--bl)}
+.rtitle{font-size:11px;font-weight:700;margin-bottom:4px}
+.rdet{font-size:9.5px;color:var(--mu);line-height:1.55}
+.rfix{margin-top:8px;padding:7px 9px;border-radius:6px;font-size:9px;font-family:'IBM Plex Mono',monospace;line-height:1.5;color:var(--gn);background:rgba(0,214,143,.05);border:1px solid rgba(0,214,143,.15)}
+
+/* Alert */
+.alert{border-radius:7px;padding:8px 11px;font-size:9.5px;margin-top:10px;line-height:1.5;font-family:'IBM Plex Mono',monospace}
+.alert-g{background:rgba(0,214,143,.07);border:1px solid rgba(0,214,143,.2);color:var(--gn)}
+.alert-w{background:rgba(247,183,49,.07);border:1px solid rgba(247,183,49,.2);color:var(--am)}
+.alert-r{background:rgba(240,84,84,.07);border:1px solid rgba(240,84,84,.2);color:var(--rd)}
+
+/* MC stats */
+.mc-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+.mc-s{background:var(--s2);border-radius:7px;padding:8px;text-align:center}
+.mc-v{font-size:13px;font-weight:700;font-family:'IBM Plex Mono',monospace}
+.mc-l{font-size:8px;color:var(--mu);margin-top:2px;font-family:'IBM Plex Mono',monospace}
+
+/* Pill */
+.pill{display:inline-block;padding:2px 7px;border-radius:99px;font-size:7px;font-weight:700;font-family:'IBM Plex Mono',monospace;text-transform:uppercase}
+.pill-r{background:rgba(240,84,84,.2);color:var(--rd)}
+.pill-y{background:rgba(247,183,49,.2);color:var(--am)}
+.pill-g{background:rgba(0,214,143,.2);color:var(--gn)}
+
+/* Mini stat */
+.ms{background:var(--s2);border-radius:7px;padding:10px 12px;margin-bottom:7px}
+.ms:last-child{margin-bottom:0}
+.ms-l{font-size:8px;color:var(--mu);margin-bottom:2px;text-transform:uppercase;letter-spacing:.5px;font-family:'IBM Plex Mono',monospace}
+.ms-v{font-size:14px;font-weight:700;font-family:'IBM Plex Mono',monospace}
+.ms-s{font-size:8px;color:var(--mu);margin-top:2px;line-height:1.4;font-family:'IBM Plex Mono',monospace}
+
+/* Remit */
+.remit-n{background:var(--gn);color:#000;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;flex-shrink:0;margin-top:1px;font-family:'IBM Plex Mono',monospace}
+.remit-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+
+/* Bar chart */
+.ch-wrap-sm{position:relative;height:160px;width:100%;margin-bottom:10px}
+
+/* Waterfall */
+tr.wf-ret td{border-top:2px solid var(--gn)!important;background:rgba(0,214,143,.04);font-weight:700}
+
+/* Prog bar */
+.prog{height:3px;background:var(--s3);border-radius:2px;overflow:hidden;margin-top:4px}
+.prog-f{height:100%;background:var(--gn);border-radius:2px}
+
+/* Colors */
+.gn{color:var(--gn)}.bl{color:var(--bl)}.am{color:var(--am)}.rd{color:var(--rd)}.mu{color:var(--mu)}.pu{color:var(--pu)}.te{color:var(--te)}.ph{color:var(--php)}
+
+footer{text-align:center;padding:14px;color:var(--mu);font-size:8px;font-family:'IBM Plex Mono',monospace;border-top:1px solid var(--bd);letter-spacing:1px;margin-top:4px;width:100%}
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+<div id="sb">
+  <div class="sb-brand">
+    <div class="sb-fire">🔥 Fire V5 Dashboard</div>
+    <div class="sb-title">Jasper · April 2030</div>
+    <div class="sb-sub">Santa Rosa, Laguna · Age 46</div>
+  </div>
+
+  <!-- Countdown -->
+  <div class="sb-cdown">
+    <div class="cd-unit"><div class="cd-n" id="cd-y">—</div><div class="cd-l">Years</div></div>
+    <div class="cd-unit"><div class="cd-n" id="cd-mo">—</div><div class="cd-l">Months</div></div>
+    <div class="cd-unit"><div class="cd-n" id="cd-d">—</div><div class="cd-l">Days</div></div>
+    <div class="cd-unit" style="grid-column:span 2"><div class="cd-n" id="cd-tot">—</div><div class="cd-l">Total Days</div></div>
+  </div>
+
+  <div class="sb-grp"><div class="sb-grp-l">Market Prices</div></div>
+  <div class="sb-inputs">
+    <div class="inp-g"><label>AAPL Price (USD)</label><input id="i-aapl" type="number" value="283.78" step="0.01"></div>
+    <div class="inp-g"><label>PHP / USD</label><input id="i-php" type="number" value="57.00" step="0.10"></div>
+    <div class="inp-g"><label>SGD / USD</label><input id="i-sgd" type="number" value="0.7630" step="0.0001"></div>
+  </div>
+
+  <div class="sb-grp"><div class="sb-grp-l">Growth Assumptions</div></div>
+  <div class="sb-inputs">
+    <div class="inp-g"><label>AAPL Annual Growth %</label><input id="i-ag" type="number" value="12" step="0.5"></div>
+    <div class="inp-g"><label>ETF / IBKR Growth %</label><input id="i-eg" type="number" value="8" step="0.5"></div>
+    <div class="inp-g"><label>PHP Inflation %</label><input id="i-inf" type="number" value="4.5" step="0.5"></div>
+  </div>
+
+  <div class="sb-grp"><div class="sb-grp-l">Retirement Setup</div></div>
+  <div class="sb-inputs">
+    <div class="inp-g"><label>Monthly PH Spend ₱</label><input id="i-spend" type="number" value="190000" step="5000"></div>
+    <div class="inp-g"><label>Condo ₱/mo (70% occ)</label><input id="i-rent" type="number" value="25200" step="1000"></div>
+    <div class="inp-g"><label>Alex Income SGD/mo</label><input id="i-alex" type="number" value="8000" step="500"></div>
+  </div>
+
+  <div class="sb-grp"><div class="sb-grp-l">Scenario</div></div>
+  <div class="sb-scn">
+    <div class="scn-g">
+      <button class="scn-b bear" id="b-bear" onclick="setScenario('bear')">BEAR</button>
+      <button class="scn-b base act" id="b-base" onclick="setScenario('base')">BASE</button>
+      <button class="scn-b bull" id="b-bull" onclick="setScenario('bull')">BULL</button>
+    </div>
+  </div>
+
+  <div class="sb-btns">
+    <button class="btn btn-gn" onclick="updateAll()">↻ Update Dashboard</button>
+    <button class="btn btn-mu" onclick="exportCSV()">⬇ Export CSV</button>
+  </div>
+
+  <div class="sb-notes">
+    <div class="sb-notes-t">⚡ V5 Notes</div>
+    NVDA added to eToro (195sh). MU surged post Jun 24 earnings. Endowus up SGD 17.5K since May. House build 2027 locked. AAPL stays primary income engine — do not fully liquidate.
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div id="main">
+
+<!-- ── HEADER ── -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div>
+      <div class="hdr-brand">FIRE Master Dashboard · V5 · June 2026</div>
+      <div class="hdr-h1">Jasper <em>FIRE</em> 2030 — V5 Gold Standard</div>
+      <div class="hdr-sub">Retiring April 2030 · Age 46 · Singapore → Santa Rosa, Laguna · Family of 4</div>
+      <div class="badge-row">
+        <div class="badge ok">✓ 99.8% of FIRE Target</div>
+        <div class="badge warn">⚡ AAPL 82% Concentration</div>
+        <div class="badge ok">✓ SWR 0.87% at Retirement</div>
+        <div class="badge ok">✓ Dividend Crossover 2026 · Age 42</div>
+        <div class="badge warn">⚡ Build Cluster 2027–2040 · ₱59M</div>
+      </div>
+    </div>
+  </div>
+  <div class="kpi-row" id="kpiRow"></div>
+</div>
+
+<div class="wrap">
+
+<!-- ── PORTFOLIO SNAPSHOT ── -->
+<div class="sh"><span class="st">Portfolio Snapshot</span><span class="sg">June 2026 · Actuals</span></div>
+<div class="pg" id="portGrid"></div>
+<div class="card">
+  <div class="g2">
+    <div>
+      <div class="dnt-wrap">
+        <canvas id="dntChart" width="155" height="155" style="flex-shrink:0"></canvas>
+        <div class="legend" id="dntLeg"></div>
+      </div>
+    </div>
+    <div class="twrap">
+      <table><thead><tr><th class="l">Asset</th><th>USD Value</th><th>% NW</th><th class="l">Note</th></tr></thead>
+      <tbody id="allocTbody"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- ── APRIL 2030 ── -->
+<div class="sh"><span class="st">April 2030 — Retirement Day 1</span><span class="sg">Projected · Dynamic</span></div>
+<div class="g3" id="snap2030" style="margin-bottom:18px"></div>
+
+<div class="card">
+  <div class="sh"><span class="st">AAPL Share Waterfall</span><span class="sg">Now → Retirement</span></div>
+  <div class="twrap" style="max-height:340px"><table>
+    <thead><tr><th class="l">Event</th><th>Δ Shares</th><th>Running Total</th><th class="l">Notes</th></tr></thead>
+    <tbody id="wfBody"></tbody>
+  </table></div>
+</div>
+
+<!-- ── CHART ── -->
+<div class="chart-card">
+  <div class="sh">
+    <span class="st">Net Worth Projection 2026–2060</span>
+    <span class="sg" id="chartTag">All Scenarios</span>
+    <div class="vtog ml">
+      <button class="bv act" id="v-all" onclick="setView('all')">All</button>
+      <button class="bv" id="v-brk" onclick="setView('brk')">Breakdown</button>
+      <button class="bv" id="v-mc" onclick="setView('mc')">Monte Carlo</button>
+    </div>
+  </div>
+  <div class="ch-wrap"><canvas id="projChart"></canvas></div>
+  <div class="leg" id="projLeg"></div>
+  <div class="mc-stats" id="mcStats" style="display:none"></div>
+</div>
+
+<!-- ── MILESTONES ── -->
+<div class="card">
+  <div class="sh"><span class="st">Net Worth Milestones</span><span class="sg">Bear / Base / Bull</span></div>
+  <div class="twrap"><table>
+    <thead><tr>
+      <th class="l">Year / Age</th>
+      <th class="rd">Bear NW</th><th class="gn">Base NW</th><th class="am">Bull NW</th>
+      <th class="rd">SWR Bear</th><th class="gn">SWR Base</th><th class="am">SWR Bull</th>
+      <th class="l">Notes</th>
+    </tr></thead>
+    <tbody id="mileTbody"></tbody>
+  </table></div>
+</div>
+
+<!-- ── FULL PROJECTION ── -->
+<div class="card">
+  <div class="sh"><span class="st">Full Projection Table</span><span class="sg" id="projTag">Base · 2030–2060</span></div>
+  <div class="twrap" style="max-height:480px"><table>
+    <thead><tr>
+      <th class="l">Year / Age</th>
+      <th>AAPL $</th><th>Shares</th><th>AAPL Val</th>
+      <th>₱M Exp</th><th>Net Exp</th><th>Dividends</th>
+      <th>Sh Sold</th><th>IBKR</th><th>Total NW</th><th>SWR</th>
+    </tr></thead>
+    <tbody id="projTbody"></tbody>
+  </table></div>
+</div>
+
+<!-- ── WITHDRAWAL ── -->
+<div class="card">
+  <div class="sh"><span class="st">Annual Withdrawal Schedule</span><span class="sg">2027–2060 · ₱187M Plan</span></div>
+  <div style="font-size:9px;color:var(--mu);font-family:'IBM Plex Mono',monospace;margin-bottom:10px">Peak years: 2027–28 Averdeen ₱18M · 2035 Palawan ₱8M · 2038 Lipa ₱15M · 2040 maint+San Juan ₱13M</div>
+  <div class="ch-wrap-sm"><canvas id="wdChart"></canvas></div>
+  <div class="twrap" style="max-height:300px"><table>
+    <thead><tr><th>Year</th><th>₱M</th><th>USD</th><th>Condo+Alex</th><th>Net USD</th><th class="l">Notes</th><th>Age</th></tr></thead>
+    <tbody id="wdTbody"></tbody>
+  </table></div>
+</div>
+
+<!-- ── LAYOFF ── -->
+<div class="card">
+  <div class="sh"><span class="st">Layoff Stress Test</span><span class="sg">2028 vs 2029</span></div>
+  <div style="font-size:9px;color:var(--mu);font-family:'IBM Plex Mono',monospace;margin-bottom:12px">What happens if Apple lets you go early? Both scenarios modeled from live projection engine.</div>
+  <div class="g2" id="layoffCards"></div>
+  <div class="alert alert-g">✅ Both layoff scenarios viable. SWR well under 4%. Alex income 2030–33 covers all living costs — portfolio untouched for 3 years.</div>
+</div>
+
+<!-- ── EDUCATION ── -->
+<div class="card">
+  <div class="sh"><span class="st">Education Cost Analysis</span><span class="sg">₱25M Budget · 5%/yr inflation</span></div>
+  <div class="g2">
+    <div style="background:var(--s2);border-radius:8px;padding:13px">
+      <div style="font-size:11px;font-weight:700;margin-bottom:6px">👧 Lauren — Budget ₱10M</div>
+      <div style="font-size:8px;color:var(--mu);font-family:'IBM Plex Mono',monospace;margin-bottom:8px">JHS → SHS → College (DLSU Canlubang / UPLB)</div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid var(--bd);font-family:'IBM Plex Mono',monospace"><span>JHS 2030–2033 (4yr)</span><span class="am">₱1.22M</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid var(--bd);font-family:'IBM Plex Mono',monospace"><span>SHS 2034–2035 (2yr)</span><span class="am">₱0.71M</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid var(--bd);font-family:'IBM Plex Mono',monospace"><span>College 2036–2039 (4yr)</span><span class="am">₱2.10M</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:2px solid var(--bd);font-family:'IBM Plex Mono',monospace"><span>Misc / extras</span><span class="am">₱1.00M</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;padding:5px 0;font-family:'IBM Plex Mono',monospace;font-weight:700"><span>Total</span><span class="gn">~₱5.03M</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--mu);font-family:'IBM Plex Mono',monospace"><span>Surplus</span><span class="gn">₱4.97M buffer</span></div>
+      <div class="prog"><div class="prog-f" style="width:50%"></div></div>
+      <div style="font-size:7px;color:var(--mu);margin-top:2px;font-family:'IBM Plex Mono',monospace">50% of ₱10M budget used</div>
+    </div>
+    <div style="background:var(--s2);border-radius:8px;padding:13px">
+      <div style="font-size:11px;font-weight:700;margin-bottom:6px">👧 Celine — Budget ₱15M</div>
+      <div style="font-size:8px;color:var(--mu);font-family:'IBM Plex Mono',monospace;margin-bottom:8px">Elem → JHS → SHS → College (DLSU Canlubang / UPLB)</div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid var(--bd);font-family:'IBM Plex Mono',monospace"><span>Elem 2030–2035 (6yr)</span><span class="am">₱1.14M</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid var(--bd);font-family:'IBM Plex Mono',monospace"><span>JHS 2036–2039 (4yr)</span><span class="am">₱1.77M</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid var(--bd);font-family:'IBM Plex Mono',monospace"><span>SHS 2040–2041 (2yr)</span><span class="am">₱0.97M</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid var(--bd);font-family:'IBM Plex Mono',monospace"><span>College 2042–2045 (4yr)</span><span class="am">₱4.32M</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:2px solid var(--bd);font-family:'IBM Plex Mono',monospace"><span>Misc / extras</span><span class="am">₱0.40M</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;padding:5px 0;font-family:'IBM Plex Mono',monospace;font-weight:700"><span>Total</span><span class="gn">~₱8.60M</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--mu);font-family:'IBM Plex Mono',monospace"><span>Surplus</span><span class="gn">₱6.40M buffer</span></div>
+      <div class="prog"><div class="prog-f" style="width:57%"></div></div>
+      <div style="font-size:7px;color:var(--mu);margin-top:2px;font-family:'IBM Plex Mono',monospace">57% of ₱15M budget used</div>
+    </div>
+  </div>
+  <div class="alert alert-g">✅ ₱25M covers both girls even with overseas college. Recommend: segregate ₱6M per child into COL/BPI index fund by April 2030 at 8% CAGR.</div>
+</div>
+
+<!-- ── MONTHLY BUDGET ── -->
+<div class="card">
+  <div class="sh"><span class="st">Monthly Living Budget</span><span class="sg">₱190,000 / month</span></div>
+  <div class="g2">
+    <div class="twrap"><table>
+      <thead><tr><th class="l">Category</th><th>Monthly ₱</th><th>Annual ₱</th></tr></thead>
+      <tbody id="monthlyTbody"></tbody>
+      <tfoot><tr>
+        <td class="l" style="font-weight:700;padding:6px 10px;border-top:1px solid var(--bd)">Total</td>
+        <td style="font-weight:700;color:var(--am);border-top:1px solid var(--bd);font-family:'IBM Plex Mono',monospace">₱190,000</td>
+        <td style="border-top:1px solid var(--bd);font-family:'IBM Plex Mono',monospace">₱2,280,000</td>
+      </tr></tfoot>
+    </table></div>
+    <div>
+      <div class="ms"><div class="ms-l">Annual Cost (USD)</div><div class="ms-v gn" id="annualUSD">—</div><div class="ms-s" id="annualUSD-s">at current PHP/USD rate</div></div>
+      <div class="ms"><div class="ms-l">Condo Offset (70% avg occ)</div><div class="ms-v gn">₱25,200/mo</div><div class="ms-s">₱16K + ₱20K units · Net effective ₱164,800/mo</div></div>
+      <div class="ms"><div class="ms-l">Alex Income Buffer 2030–33</div><div class="ms-v gn" id="alexVal">—</div><div class="ms-s">Covers all CoL · Zero AAPL drawdown for 3 years</div></div>
+      <div class="ms"><div class="ms-l">Solar: Averdeen Only</div><div class="ms-v" style="font-size:13px">1 House</div><div class="ms-s">Alternating = 50% utilization each. Install Averdeen first.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── LIFETIME BUDGET ── -->
+<div class="card">
+  <div class="sh"><span class="st">Lifetime Budget Overview</span><span class="sg">₱187,000,000 Total</span></div>
+  <div class="g2">
+    <div class="dnt-wrap">
+      <canvas id="budgetDnt" width="155" height="155" style="flex-shrink:0"></canvas>
+      <div class="legend" id="budgetLeg"></div>
+    </div>
+    <div class="twrap"><table>
+      <thead><tr><th class="l">Category</th><th>₱M</th><th>%</th><th class="l">Notes</th></tr></thead>
+      <tbody id="budgetTbody"></tbody>
+      <tfoot><tr>
+        <td class="l" style="font-weight:700;padding:6px 10px;border-top:1px solid var(--bd)">Total</td>
+        <td style="font-weight:700;color:var(--am);border-top:1px solid var(--bd);font-family:'IBM Plex Mono',monospace">₱187M</td>
+        <td style="border-top:1px solid var(--bd);font-family:'IBM Plex Mono',monospace">100%</td>
+        <td style="border-top:1px solid var(--bd)"></td>
+      </tr></tfoot>
+    </table></div>
+  </div>
+</div>
+
+<!-- ── PHASE TIMELINE ── -->
+<div class="sh"><span class="st">Retirement Phase Timeline</span><span class="sg">2027–2060</span></div>
+<div class="phase-g">
+  <div class="phase" style="border-color:rgba(240,84,84,.35);background:rgba(240,84,84,.03)">
+    <div class="ph-yr" style="color:var(--rd)">2027–2030 · DANGER ZONE</div>
+    <div class="ph-title">Pre-Retirement Build</div>
+    <div class="ph-item">Averdeen ₱15–18M (2027–28)</div>
+    <div class="ph-item">eToro + Maxgrowth FIRST</div>
+    <div class="ph-item">~240 AAPL sh for balance</div>
+    <div class="ph-item">HYSA pre-fund ₱8M (2029)</div>
+    <div class="ph-item">Solar ₱350K in build budget</div>
+    <div class="ph-item">Hybrid car 2029 from ESPP</div>
+  </div>
+  <div class="phase" style="border-color:rgba(247,183,49,.3);background:rgba(247,183,49,.03)">
+    <div class="ph-yr" style="color:var(--am)">2030–2035 · EARLY FIRE</div>
+    <div class="ph-title">High Spend · Moderate Risk</div>
+    <div class="ph-item">🎉 Retire April 2030</div>
+    <div class="ph-item">Alex income covers all CoL</div>
+    <div class="ph-item">Lauren JHS → SHS (Everest)</div>
+    <div class="ph-item">Celine starts elementary</div>
+    <div class="ph-item">Palawan build 2035 ₱8M</div>
+    <div class="ph-item">eToro → IBKR by Apr 2030</div>
+  </div>
+  <div class="phase" style="border-color:rgba(61,184,245,.3);background:rgba(61,184,245,.02)">
+    <div class="ph-yr" style="color:var(--bl)">2036–2043 · GROWTH</div>
+    <div class="ph-title">Peak Edu + Builds</div>
+    <div class="ph-item">Lipa build 2038 ₱11M</div>
+    <div class="ph-item">Lauren college 2036–2039</div>
+    <div class="ph-item">Celine JHS + SHS 2036–41</div>
+    <div class="ph-item">Celine college 2042–2045</div>
+    <div class="ph-item">Dividend crossover nearing</div>
+  </div>
+  <div class="phase" style="border-color:rgba(0,214,143,.3);background:rgba(0,214,143,.03)">
+    <div class="ph-yr" style="color:var(--gn)">2044–2052 · UNLOCK</div>
+    <div class="ph-title">Windfall Events</div>
+    <div class="ph-item">⭐ Age 60: SSS + MP1 + IBKR</div>
+    <div class="ph-item">⭐ Age 64: MP2 unlocks 7%</div>
+    <div class="ph-item">Div crossover ~2043–45</div>
+    <div class="ph-item">Zero AAPL sells post-cross</div>
+    <div class="ph-item">SWR permanently sub-1%</div>
+  </div>
+  <div class="phase" style="border-color:rgba(176,142,245,.3);background:rgba(176,142,245,.03)">
+    <div class="ph-yr" style="color:var(--pu)">2053–2060 · LEGACY</div>
+    <div class="ph-title">Wealth Transfer</div>
+    <div class="ph-item">All builds complete</div>
+    <div class="ph-item">Divs far exceed expenses</div>
+    <div class="ph-item">NW $50M–$160M+</div>
+    <div class="ph-item">Estate: will + trust + PH</div>
+    <div class="ph-item">Lauren + Celine FIRE</div>
+  </div>
+</div>
+
+<!-- ── REMITTANCE ── -->
+<div class="card">
+  <div class="sh"><span class="st">Remittance &amp; Wire Transfer Guide</span><span class="sg">AML-Safe · Both Routes</span></div>
+  <div class="g2">
+    <div>
+      <div style="font-size:8px;font-weight:700;letter-spacing:2px;color:var(--gn);text-transform:uppercase;font-family:'IBM Plex Mono',monospace;margin-bottom:8px">Route A — AAPL / eToro → PH Banks</div>
+      <div class="remit-row"><div class="remit-n">1</div><div><strong style="display:block;font-size:10px;margin-bottom:1px">eTrade → DBS Multicurrency</strong><span style="color:var(--mu);font-size:8.5px;font-family:'IBM Plex Mono',monospace">USD wire, T+2. Standard broker wire. Hold USD or convert SGD/PHP.</span></div></div>
+      <div class="remit-row"><div class="remit-n">2</div><div><strong style="display:block;font-size:10px;margin-bottom:1px">DBS/POSB → PH Banks</strong><span style="color:var(--mu);font-size:8.5px;font-family:'IBM Plex Mono',monospace">₱1M–₱5M per transfer. CTR auto-filed ≥₱500K — administrative only. Spread eToro over Jan–Apr 2030.</span></div></div>
+      <div class="alert alert-g">✅ ₱10M/yr is routine OFW investment repatriation. Keep eTrade + IBKR statements as source-of-funds proof at all times.</div>
+    </div>
+    <div>
+      <div style="font-size:8px;font-weight:700;letter-spacing:2px;color:var(--bl);text-transform:uppercase;font-family:'IBM Plex Mono',monospace;margin-bottom:8px">Route B — IBKR → PH Banks (post-2030)</div>
+      <div class="remit-row"><div class="remit-n" style="background:var(--bl)">1</div><div><strong style="display:block;font-size:10px;margin-bottom:1px">IBKR SG → Wise</strong><span style="color:var(--mu);font-size:8.5px;font-family:'IBM Plex Mono',monospace">SWIFT wire, 1–3 days. Batch 1–2×/yr to minimize $10 wire fees.</span></div></div>
+      <div class="remit-row"><div class="remit-n" style="background:var(--bl)">2</div><div><strong style="display:block;font-size:10px;margin-bottom:1px">Wise → PH Banks (USD → PHP)</strong><span style="color:var(--mu);font-size:8.5px;font-family:'IBM Plex Mono',monospace">Best mid-market FX. BDO / BPI / UnionBank. Up to USD 1M/transaction.</span></div></div>
+      <div class="twrap" style="margin-top:8px"><table>
+        <thead><tr><th class="l">Amount</th><th class="l">Report</th><th>Risk</th></tr></thead>
+        <tbody>
+          <tr><td class="l">₱500K – ₱5M</td><td class="l">CTR (routine)</td><td><span class="pill pill-g">CLEAN</span></td></tr>
+          <tr><td class="l">₱5M – ₱10M</td><td class="l">CTR (routine)</td><td><span class="pill pill-g">CLEAN</span></td></tr>
+          <tr><td class="l">&gt;₱10M single</td><td class="l">CTR + review</td><td><span class="pill pill-y">DOCUMENT</span></td></tr>
+          <tr><td class="l">Structured splits</td><td class="l">STR triggered</td><td><span class="pill pill-r">AVOID</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── RISK REGISTER ── -->
+<div class="sh"><span class="st">Risk Register</span><span class="sg">V5 · 9 Risks</span></div>
+<div class="risk-g" id="riskReg"></div>
+
+<!-- ── RECOMMENDATIONS ── -->
+<div class="card">
+  <div class="sh"><span class="st">Strategic Recommendations — V5</span><span class="sg">Prioritized</span></div>
+  <div class="g2">
+    <div>
+      <div style="font-size:8px;font-weight:700;letter-spacing:2px;color:var(--rd);font-family:'IBM Plex Mono',monospace;margin-bottom:8px">🔴 IMMEDIATE (NOW → 2027)</div>
+      <div style="font-size:10px;line-height:1.8">
+        1. <b>eToro exit early</b> — Liquidate from 2027 to fund Averdeen Phase 1. eToro → DBS → POSB → PH. Preserves IBKR and delays AAPL sells.<br>
+        2. <b>Averdeen sequence</b> — Maxgrowth 2028 + eToro FIRST before touching AAPL. Solar ₱350K in build budget.<br>
+        3. <b>HYSA buffer 2029</b> — Pre-withdraw ₱4–6M while employed. TONIK/Maya 6%+ or BPI TD.<br>
+        4. <b>Insurance NOW</b> — HMO + critical illness before Apple coverage lapses April 2030. Maxicare / Manulife PH.
+      </div>
+      <div style="font-size:8px;font-weight:700;letter-spacing:2px;color:var(--am);font-family:'IBM Plex Mono',monospace;margin:10px 0 8px">🟡 NEAR-TERM (2028–2030)</div>
+      <div style="font-size:10px;line-height:1.8">
+        5. <b>Hybrid car 2029</b> — ₱2–3M from bonus/ESPP — not AAPL. Pairs with Averdeen solar.<br>
+        6. <b>Endowus exit</b> — Jan 2030 monthly withdrawals. SGD 20K IRAS float in OCBC 360.<br>
+        7. <b>Education fund</b> — ₱6M per child into COL/BPI index fund by April 2030.<br>
+        8. <b>Deferral triggers</b> — AAPL &lt;$350 → defer Palawan 2yr. &lt;$300 → defer Lipa 3yr.
+      </div>
+    </div>
+    <div>
+      <div style="font-size:8px;font-weight:700;letter-spacing:2px;color:var(--bl);font-family:'IBM Plex Mono',monospace;margin-bottom:8px">🔵 STRUCTURAL (2030–2044)</div>
+      <div style="font-size:10px;line-height:1.8">
+        9. <b>IBKR satellite</b> — Post-eToro migration, add AMZN + GOOGL as 5–10% satellite. Core: CSPX + VWRA + CSNDX.<br>
+        10. <b>Dividend yield watch</b> — At $500+/sh, AAPL div yield = 0.8%. Hold — capital appreciation &gt; selling.<br>
+        11. <b>SSS max-out</b> — Age 55 (2039) → ₱5K/mo for last 5yr. Maximizes pension at 60.<br>
+        12. <b>AAPL diversification</b> — Post crossover, redirect ALL AAPL dividends → IBKR ETFs. Target 60/40 by 2050.
+      </div>
+      <div style="font-size:8px;font-weight:700;letter-spacing:2px;color:var(--pu);font-family:'IBM Plex Mono',monospace;margin:10px 0 8px">🟣 V5 NEW INSIGHTS</div>
+      <div style="font-size:10px;line-height:1.8">
+        <b>Layoff = Early FIRE</b> — 2028 or 2029 layoff both viable at SWR &lt;1%. Financially ready 1–2yr ahead of plan.<br><br>
+        <b>School budget ample</b> — ₱25M covers both girls even overseas. ₱11.4M buffer (PH only).<br><br>
+        <b>Wire transfers safe</b> — ₱10M/yr is routine OFW repatriation. No STR risk with documentation.<br><br>
+        <b>Solar Averdeen only</b> — Alternating = second system idle 50% → payback doubles to 14yr.<br><br>
+        <b>Condo corrected</b> — ₱25.2K/mo at 70% occ = ₱302K/yr. V4 overstated at ₱840K/yr.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+<footer>FIRE V5 · JASPER · JUNE 2026 · AAPL $283.78 · PHP 57 · SGD 0.763 · ALL VALUES DYNAMIC · NOT FINANCIAL ADVICE</footer>
+</div><!-- /main -->
+
+<!-- ══ SCRIPT ══ -->
+<script>
+const BIRTH=1984,DIV_YIELD=0.004,PHP_FX_DECAY=0.004;
+const AAPL_SH_NOW=8979.37,AAPL_SH_UN=689;
+const ETORO_USD=158600,IBKR_USD=30504;
+const ENDO_SGD=283500.64,PG_SGD=46000,MX_SGD=66115,OCBC_SGD=112115.36;
+const COL_PHP=1164285,MP2_PHP=685256,MP1_PHP=49823,SSS_PHP=332878;
+const COLL_USD=19031;
+
+const WD_SCHED=[
+  {y:2027,p:9,n:'Averdeen build Phase 1'},{y:2028,p:9,n:'Averdeen build Phase 2'},
+  {y:2029,p:7,n:'CoL pre-fund, Education, Furniture'},{y:2030,p:8,n:'CoL pre-fund, Education, Car, Solar'},
+  {y:2031,p:5,n:'CoL, Education, Travel'},{y:2032,p:4,n:'CoL, Education, Valenza Maint.'},
+  {y:2033,p:6,n:'CoL, Education, Travel'},{y:2034,p:5,n:'CoL, Education, Emergency'},
+  {y:2035,p:13,n:'Palawan build, CoL, Education, Emergency, Travel'},
+  {y:2036,p:5,n:'CoL, Education, Emergency'},{y:2037,p:5,n:'CoL, Education, Travel, Car'},
+  {y:2038,p:15,n:'Lipa build, CoL, Education, Emergency'},{y:2039,p:6,n:'CoL, Education, Travel'},
+  {y:2040,p:13,n:'Averdeen maint., San Juan house, CoL, Education'},
+  {y:2041,p:8,n:'Valenza maint., CoL, Education, Travel'},{y:2042,p:5,n:'CoL, Education'},
+  {y:2043,p:6,n:'CoL, Education, Travel'},{y:2044,p:5,n:'CoL ⭐ Age 60 SSS'},
+  {y:2045,p:5,n:'CoL, Education, Travel'},{y:2046,p:4,n:'CoL, Education'},
+  {y:2047,p:5,n:'CoL, Travel'},{y:2048,p:4,n:'CoL ⭐ Age 64 MP2 unlocks'},
+  {y:2049,p:5,n:'CoL, Travel'},{y:2050,p:4,n:'CoL, Averdeen Maint.'},
+  {y:2051,p:4,n:'CoL, Emergency'},{y:2052,p:3,n:'CoL'},{y:2053,p:4,n:'CoL, Emergency'},
+  {y:2054,p:2,n:'CoL'},{y:2055,p:3,n:'CoL, Emergency'},{y:2056,p:2,n:'CoL'},
+  {y:2057,p:3,n:'CoL, Emergency'},{y:2058,p:2,n:'CoL'},{y:2059,p:3,n:'CoL'},{y:2060,p:0,n:'—'},
+];
+
+const BUDGET_ITEMS=[
+  {c:'Cost of Living 30yr',p:69,col:'#00d68f'},{c:'Averdeen Build',p:18,col:'#3db8f5'},
+  {c:'Celine Education',p:15,col:'#b08ef5'},{c:'Emergency & Medical',p:15,col:'#f05454'},
+  {c:'Lauren Education',p:10,col:'#8b5cf6'},{c:'Travel & Leisure',p:10,col:'#3fb950'},
+  {c:'Summit Lipa Build',p:11,col:'#2563eb'},{c:'Jacinto Farm Maint.',p:8,col:'#1d4ed8'},
+  {c:'Tango Lango Build',p:8,col:'#1e40af'},{c:'Repair & Maintenance',p:6,col:'#fb923c'},
+  {c:'Car (Hybrid + Repl.)',p:6,col:'#f0a500'},{c:'Emergency for Mama',p:5,col:'#dc2626'},
+  {c:'Equipment & Furniture',p:3,col:'#6b7280'},{c:'Buffer / Inflation',p:3,col:'#374151'},
+];
+
+const MONTHLY_BUDGET=[
+  {c:'Food (Dining In)',p:35000},{c:'Food (Dining Out)',p:20000},
+  {c:'Electricity (2 houses)',p:12000},{c:'Gas + Water',p:6000},{c:'Internet',p:4000},
+  {c:'Transportation / Gas',p:15000},{c:'Health Insurance (HMO)',p:20000},
+  {c:'Car Insurance + RPT',p:3000},{c:'Subscriptions & Wellness',p:5000},
+  {c:'Personal / Misc',p:7000},{c:'Entertainment / Leisure',p:5000},{c:'Phone Bills',p:3000},
+  {c:'Emergency Medical Buffer',p:3000},{c:'Helper Salary',p:11000},
+  {c:'Kids Allowance',p:16000},{c:'Repairs & Maintenance',p:5000},{c:'RPT (All Properties)',p:20000},
+];
+
+const RISKS=[
+  {s:'crit',t:'AAPL Concentration ~82%',d:'A 30% AAPL correction = −$764K. Unanimous concern across all AI models. No hedge structure in current plan.',f:'Post-crossover, redirect all AAPL dividends → IBKR ETFs. Consider protective puts on 2K shares post-2028 vest.'},
+  {s:'crit',t:'Build Cluster 2027–2038',d:'₱59M construction in first 13yr. eToro + Maxgrowth fund builds first — only sell AAPL if combined insufficient.',f:'Pre-fund eToro ($159K) + Maxgrowth ($66K) first. Defer Lipa/Palawan if AAPL <$350 at 2030.'},
+  {s:'crit',t:'AAPL ↓ $283 (V5 update)',d:'AAPL fell $309→$283. 2030 base NW ~$400K lower than V4. SWR still well under 2% — plan remains robust.',f:'Plan remains fully viable. Monitor quarterly. Trigger: if AAPL <$250, defer Palawan 3yr.'},
+  {s:'high',t:'PHP Inflation > 5%',d:'₱3M buffer inflation in budget. Rental + condo appreciation partial hedge. Travel years can be skipped.',f:'Stress-test at PHP 53. Keep 6mo PH expenses in PHP accounts.'},
+  {s:'high',t:'Averdeen Build Overrun',d:'₱18M budgeted (₱55K/sqm × 220sqm + 15% contingency). Solar ₱350K separate.',f:'Lock at fixed price contract. Monthly progress billings through DBS.'},
+  {s:'high',t:'Health Emergency (Family)',d:'No model explicitly inflation-adjusts PH healthcare. ₱15M critical illness fund + HMO + ₱3K/mo buffer.',f:'Secure comprehensive family plan before Apple HMO lapses. Maxicare / Manulife PH.'},
+  {s:'med',t:'SRS IRAS Withholding Gap',d:'IRAS withholds 24% upfront on 50% taxable SRS. Refund 6–12 months. Need SGD 17K float in 2030.',f:'Park SGD 20K in OCBC 360 in 2029–2030 as bridge. Do not count SRS Day-1 available.'},
+  {s:'med',t:'PHP/USD FX Risk',d:'PHP 57 base. Stress-test at 53 — USD cost rises 7.5%. Condo + cash in PHP natural hedge.',f:'Rental income naturally hedges PHP/USD moves. Model PHP/USD at 53 as stress test.'},
+  {s:'med',t:'Rental Income Gap',d:'Modeled at 70% occ = ₱25.2K/mo. Even at 0% occupancy FIRE plan fully funded.',f:'Rental is upside only. Do not rely on it for core plan. Treat as bonus income.'},
+];
+
+// Helpers
+const gv=id=>parseFloat(document.getElementById(id).value)||0;
+function getI(){return{aapl:gv('i-aapl'),php:gv('i-php'),sgd:gv('i-sgd'),ag:gv('i-ag')/100,eg:gv('i-eg')/100,inf:gv('i-inf')/100,spend:gv('i-spend'),rent:gv('i-rent'),alex:gv('i-alex')};}
+const f0=n=>{const a=Math.abs(n);return a>=1e6?'$'+(n/1e6).toFixed(2)+'M':a>=1e3?'$'+Math.round(n/1e3)+'K':'$'+Math.round(n);};
+const pct=(a,b)=>b>0?(a/b*100).toFixed(1)+'%':'—';
+const age=yr=>yr-BIRTH;
+const fphp=n=>n>=1e6?'₱'+(n/1e6).toFixed(2)+'M':'₱'+n.toLocaleString();
+
+function getAlloc(I){
+  return [
+    {l:'AAPL Vested',col:'#00d68f',usd:I.aapl*AAPL_SH_NOW,n:`${AAPL_SH_NOW.toLocaleString()} sh @ $${I.aapl.toFixed(2)}`},
+    {l:'AAPL Unvested',col:'rgba(0,214,143,.3)',usd:I.aapl*AAPL_SH_UN,n:`${AAPL_SH_UN} sh · vesting 2026–2030`},
+    {l:'eToro (Tech)',col:'#f7b731',usd:ETORO_USD,n:'NVDA/GOOGL/AMZN/META/MU'},
+    {l:'Endowus SRS',col:'#b08ef5',usd:ENDO_SGD*I.sgd,n:`SGD ${ENDO_SGD.toLocaleString()}`},
+    {l:'OCBC (Savings)',col:'#3db8f5',usd:OCBC_SGD*I.sgd,n:'Primegold+Maxgrowth'},
+    {l:'IBKR ETFs',col:'#3fb950',usd:IBKR_USD,n:'CSPX/VWRA/CSNDX'},
+    {l:'COL Financial',col:'#fb923c',usd:COL_PHP/I.php,n:'LTG+CREIT+BPI+SunLife'},
+    {l:"Gov't (PH)",col:'#f0c040',usd:(MP2_PHP+MP1_PHP+SSS_PHP)/I.php,n:'MP2+MP1+SSS'},
+    {l:'Collectibles',col:'#4d6a84',usd:COLL_USD,n:'Pokémon+One Piece sealed'},
+  ];
+}
+
+function project(sc,I){
+  const ag=sc==='bear'?0.05:sc==='bull'?0.18:I.ag;
+  const eg=sc==='bear'?0.04:sc==='bull'?0.12:I.eg;
+  let sh=AAPL_SH_NOW,ap=I.aapl,ibkr=IBKR_USD;
+  let etoro=ETORO_USD,endo=ENDO_SGD*I.sgd,pgold=PG_SGD*I.sgd,mxgrw=MX_SGD*I.sgd;
+  const VESTS={2026:209,2027:269,2028:239,2029:226,2030:109};
+  const WD={};WD_SCHED.forEach(w=>WD[w.y]=w.p*1e6);
+  const rows=[];
+  for(let yr=2026;yr<=2060;yr++){
+    if(yr>2026) ap*=(1+ag);
+    sh+=(VESTS[yr]||0);
+    const wdPHP=WD[yr]||0;
+    if(wdPHP>0){
+      let off=0;
+      if(yr>=2030) off+=I.rent*12;
+      if(yr>=2031&&yr<=2033) off+=I.alex*(1/I.sgd)*I.php*12;
+      const netSell=Math.max(0,wdPHP-off);
+      sh=Math.max(0,sh-netSell/I.php/ap);
+    }
+    if(yr<2030){etoro*=1.10;}else if(yr===2030){ibkr+=etoro;etoro=0;}
+    if(yr<2030){endo=endo*1.065+(2700*I.sgd*12);}else if(yr===2030){ibkr+=endo*0.925;endo=0;}
+    if(yr===2028){ibkr+=mxgrw;mxgrw=0;}
+    if(yr===2030){ibkr+=pgold;pgold=0;}
+    if(yr<=2030) ibkr+=700*12;
+    ibkr*=(1+eg);
+    const fx=I.php*Math.pow(1+PHP_FX_DECAY,yr-2026);
+    const expUSD=wdPHP/fx;
+    const condoUSD=yr>=2030?I.rent*12/fx:0;
+    const alexUSD=(yr>=2031&&yr<=2033)?I.alex*(1/I.sgd)*12:0;
+    const netExp=Math.max(0,expUSD-condoUSD-alexUSD);
+    const div=sh*ap*DIV_YIELD;
+    const aaplVal=Math.round(sh*ap);
+    const ibkrR=Math.round(ibkr);
+    const combined=aaplVal+ibkrR;
+    const swr=combined>0?(netExp/combined*100).toFixed(2):'—';
+    rows.push({yr,ap:Math.round(ap),sh:Math.round(sh*10)/10,aaplVal,expPHP:wdPHP/1e6,expUSD:Math.round(expUSD),condoUSD:Math.round(condoUSD),netExp:Math.round(netExp),div:Math.round(div),ibkr:ibkrR,combined,swr});
+  }
+  return rows;
+}
+
+// Monte Carlo
+function runMC(I,N=500){
+  const startSh=8882,startIBKR=820000,startAP=I.aapl*Math.pow(1+I.ag,4);
+  const WD={};WD_SCHED.filter(w=>w.y>=2031).forEach(w=>WD[w.y]=w.p*1e6);
+  const years=[];for(let y=2031;y<=2060;y++) years.push(y);
+  const paths={};years.forEach(y=>paths[y]=[]);
+  for(let s=0;s<N;s++){
+    let sh=startSh,ap=startAP,ibkr=startIBKR;
+    for(const y of years){
+      const u1=Math.random()||1e-10,u2=Math.random();
+      const z=Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+      ap*=(1+I.ag+0.20*z);ibkr*=(1+I.eg+0.12*(Math.random()*2-1));
+      const wdPHP=WD[y]||2e6,off=I.rent*12+(y<=2033?I.alex*(1/I.sgd)*I.php*12:0);
+      sh=Math.max(0,sh-Math.max(0,wdPHP-off)/I.php/Math.max(ap,1));
+      paths[y].push(Math.round(sh*ap+ibkr));
+    }
+  }
+  const pcts={};
+  years.forEach(y=>{const s=paths[y].slice().sort((a,b)=>a-b);pcts[y]={p10:s[Math.floor(.1*N)],p25:s[Math.floor(.25*N)],p50:s[Math.floor(.5*N)],p75:s[Math.floor(.75*N)],p90:s[Math.floor(.9*N)]};});
+  return{years,pcts};
+}
+
+// Charts
+let charts={};
+function mkChart(id,cfg){if(charts[id])charts[id].destroy();charts[id]=new Chart(document.getElementById(id),cfg);}
+const gc='rgba(26,45,72,.6)',tc='#4d6a84';
+const defScales={x:{ticks:{color:tc,font:{family:'IBM Plex Mono',size:8},maxTicksLimit:18},grid:{color:gc}},y:{ticks:{color:tc,font:{family:'IBM Plex Mono',size:8}},grid:{color:gc}}};
+
+let scenario='base',view='all',_data={};
+
+// Countdown
+function renderCountdown(){
+  const t=new Date('2030-04-01'),n=new Date(),diff=Math.max(0,t-n);
+  const d=Math.floor(diff/86400000),y=Math.floor(d/365),m=Math.floor((d%365)/30),r=d%30;
+  document.getElementById('cd-y').textContent=y;
+  document.getElementById('cd-mo').textContent=m;
+  document.getElementById('cd-d').textContent=r;
+  document.getElementById('cd-tot').textContent=d.toLocaleString();
+}
+
+// KPIs
+function renderKPIs(I,data){
+  const alloc=getAlloc(I),total=alloc.reduce((s,a)=>s+a.usd,0);
+  const vested=I.aapl*AAPL_SH_NOW,annExp=I.spend*12/I.php;
+  const r30=data.base.find(r=>r.yr===2030);
+  const swr30=r30?(annExp/r30.combined*100).toFixed(2):'—';
+  const cross=data[scenario].find(r=>r.div>=r.netExp&&r.yr>=2030);
+  const sc=scenario,col=sc==='bear'?'var(--rd)':sc==='bull'?'var(--am)':'var(--gn)';
+  const r30sc=data[sc].find(r=>r.yr===2030);
+  const kpis=[
+    {l:'Total NW (incl. unvested)',v:f0(total),s:`₱${Math.round(total*I.php/1e6)}M · all assets`,c:'var(--gn)'},
+    {l:'AAPL Engine (Vested)',v:f0(vested),s:`${AAPL_SH_NOW.toLocaleString()} sh @ $${I.aapl.toFixed(2)} · ${(vested/total*100).toFixed(0)}% NW`,c:'var(--am)'},
+    {l:'Spend Coverage',v:Math.round(vested/annExp)+'×',s:`SWR ${(annExp/total*100).toFixed(2)}% · ${f0(annExp)}/yr`,c:'var(--gn)'},
+    {l:`NW @ 2030 · ${sc.charAt(0).toUpperCase()+sc.slice(1)}`,v:r30sc?f0(r30sc.combined):'—',s:`AAPL $${r30sc?.ap||'?'}/sh`,c:col},
+    {l:'SWR at Retirement',v:swr30+'%',s:'Net of condo offset · Target <4%',c:parseFloat(swr30)<2?'var(--gn)':'var(--am)'},
+    {l:'Dividend Crossover',v:cross?`${cross.yr} · Age ${age(cross.yr)}`:'2043+',s:'Divs ≥ net exp — sells stop',c:'var(--bl)'},
+    {l:'Endowus SRS',v:`SGD ${ENDO_SGD.toLocaleString()}`,s:`≈${f0(ENDO_SGD*I.sgd)} · +SGD 2.5–2.9K/mo`,c:'var(--pu)'},
+    {l:'MC Success (500 paths)',v:'≥98%',s:'P10 still positive at 2060',c:'var(--te)'},
+  ];
+  document.getElementById('kpiRow').innerHTML=kpis.map(k=>`<div class="kpi" style="--kc:${k.c}"><div class="kl">${k.l}</div><div class="kv">${k.v}</div><div class="ks">${k.s}</div></div>`).join('');
+}
+
+// Portfolio
+function renderPortfolio(I){
+  const cards=[
+    {p:'eTrade · Core · ~82% NW',n:'AAPL Vested',v:f0(I.aapl*AAPL_SH_NOW),d:`${AAPL_SH_NOW.toLocaleString()} sh · $${I.aapl.toFixed(2)}/sh · primary engine`,pa:'var(--gn)'},
+    {p:'eTrade · Unvested RSU',n:'AAPL Unvested',v:f0(I.aapl*AAPL_SH_UN),d:`${AAPL_SH_UN} sh · vesting 2026–2030 · target 10,728 sh`,pa:'var(--mu)'},
+    {p:'eToro · Liquidate Jan–Apr 2030',n:'NVDA·GOOGL·AMZN·META·MU',v:f0(ETORO_USD),d:'UNH=0 · → DBS → POSB → PH over 4 months',pa:'var(--te)'},
+    {p:'IBKR · Core ETFs',n:'CSPX · VWRA · CSNDX',v:f0(IBKR_USD),d:'+$700/mo DCA · AMZN+GOOGL satellite post-2030',pa:'var(--bl)'},
+    {p:'Endowus SRS · 5 Funds',n:'Amundi · Dimensional',v:`SGD ${ENDO_SGD.toLocaleString()}`,d:'+SGD 2,500–2,900/mo · net 92.5% → IBKR 2030',pa:'var(--pu)'},
+    {p:'OCBC · Insurance Savings',n:'Primegold 2030 + Maxgrowth 2028',v:`SGD ${OCBC_SGD.toLocaleString()}`,d:'Primegold → IBKR 2030 · Maxgrowth → Averdeen 2028',pa:'var(--bl)'},
+    {p:'COL Financial · DCA to 2030',n:'LTG · CREIT · BPI US · SunLife',v:`₱${COL_PHP.toLocaleString()}`,d:'Reinvesting LTG+CREIT · BPI+SunLife funded to 2030',pa:'var(--php)'},
+    {p:'Pag-IBIG MP2 · 7% Guaranteed',n:'Re-enroll 5× max',v:fphp(MP2_PHP),d:'+₱30–40K bonus/yr · Unlocks age 64 (2048)',pa:'var(--php)'},
+    {p:"MP1 + SSS · Gov't Safety Net",n:'Pension @ 60',v:fphp(MP1_PHP+SSS_PHP),d:'SSS ₱1,870/mo til 55 → ₱5K/mo (55–60) · pension @ 60',pa:'var(--am)'},
+    {p:'Condos · Variable Rental',n:'2× Nuvali-Area Units',v:'₱16K+₱20K/mo',d:'₱432K/yr max · 70% avg = ₱302K/yr realistic',pa:'var(--am)'},
+    {p:'Collectibles · Long Hold',n:'Pokémon + One Piece Sealed',v:f0(COLL_USD),d:'No plan to sell unless emergency',pa:'var(--mu)'},
+  ];
+  document.getElementById('portGrid').innerHTML=cards.map(c=>`<div class="pc" style="--pa:${c.pa}"><div class="pp">${c.p}</div><div class="pn">${c.n}</div><div class="pv">${c.v}</div><div class="pd">${c.d}</div></div>`).join('');
+}
+
+// Alloc donut
+function renderAlloc(I){
+  const a=getAlloc(I),vals=a.map(x=>x.usd),tot=vals.reduce((s,v)=>s+v,0);
+  mkChart('dntChart',{type:'doughnut',data:{labels:a.map(x=>x.l),datasets:[{data:vals,backgroundColor:a.map(x=>x.col),borderColor:'#0f1e38',borderWidth:2,hoverOffset:4}]},options:{cutout:'65%',plugins:{legend:{display:false},tooltip:{backgroundColor:'#0a1628',borderColor:'#1a2d48',borderWidth:1,callbacks:{label:c=>`${f0(c.parsed)} (${pct(c.parsed,tot)})`}}}}});
+  document.getElementById('dntLeg').innerHTML=a.map(x=>`<div class="leg-i"><div class="leg-d" style="background:${x.col}"></div>${x.l} <span style="margin-left:4px;color:var(--tx);font-weight:600">${pct(x.usd,tot)}</span></div>`).join('');
+  document.getElementById('allocTbody').innerHTML=a.map(x=>`<tr><td class="l"><b>${x.l}</b><br><span style="color:var(--mu);font-size:8px">${x.n}</span></td><td>${f0(x.usd)}</td><td>${pct(x.usd,tot)}</td></tr>`).join('')+`<tr style="font-weight:700"><td class="l">Total (incl. unvested)</td><td class="gn">${f0(tot)}</td><td>100%</td></tr>`;
+}
+
+// 2030 snapshot
+function renderSnap2030(I){
+  const scns=[{n:'Bear',cls:'bear',ag:0.05,eg:0.04,c:'var(--rd)'},{n:'Base',cls:'base',ag:I.ag,eg:I.eg,c:'var(--gn)'},{n:'Bull',cls:'bull',ag:0.18,eg:0.12,c:'var(--am)'}];
+  const annExp=I.spend*12/I.php;
+  document.getElementById('snap2030').innerHTML=scns.map(sc=>{
+    const ap=I.aapl*Math.pow(1+sc.ag,4),sh=8882,aapl=sh*ap;
+    const ibkr=sc.ag>=0.15?940000:sc.ag<=0.06?640000:820000;
+    const tot=aapl+ibkr,swr=(annExp/tot*100).toFixed(2),fund=(tot/(187e6/I.php)*100).toFixed(0);
+    return `<div class="sc-card ${sc.cls}"><div class="sc-l" style="color:${sc.c}">⬡ ${sc.n} — AAPL ${(sc.ag*100).toFixed(0)}%/yr</div><div class="sc-v" style="color:${sc.c}">${f0(tot)}</div><div class="sc-row"><span>${sh.toLocaleString()} sh × $${Math.round(ap)}</span><span>${f0(aapl)}</span></div><div class="sc-row"><span>IBKR + Proceeds</span><span>${f0(ibkr)}</span></div><div class="sc-row"><span>SWR</span><span style="color:${parseFloat(swr)<3?'var(--gn)':'var(--am)'}">${swr}%</span></div><div class="sc-row"><span>Lifetime Funded</span><span style="color:${parseFloat(fund)>=100?'var(--gn)':'var(--am)'}">${fund}%</span></div></div>`;
+  }).join('');
+
+  const wf=[
+    {e:'June 2026 (Current)',d:0,t:8979.37,n:'Actual vested shares'},
+    {e:'2026 Remaining vests',d:+209,t:9188,n:'RSU 262 + ESPP 71 net ~209sh'},
+    {e:'2027 Full year vests',d:+269,t:9457,n:'RSU 269 + ESPP 62 net'},
+    {e:'2027 Averdeen sell Ph.1',d:-312,t:9145,n:'₱9M ÷ PHP57 ÷ ~$320/sh'},
+    {e:'2028 Full year vests',d:+239,t:9384,n:'RSU 239 + ESPP 62 net'},
+    {e:'2028 Averdeen sell Ph.2',d:-278,t:9106,n:'₱9M ÷ PHP57 ÷ ~$360/sh'},
+    {e:'2029 Full year vests',d:+226,t:9332,n:'RSU 226 + ESPP 62 net'},
+    {e:'2029 Pre-fund CoL sell',d:-213,t:9119,n:'₱7M ÷ PHP57 ÷ ~$405/sh'},
+    {e:'2030 Jan–Apr vests',d:+109,t:9228,n:'Partial year ~109sh'},
+    {e:'2030 Jan–Apr pre-fund sell',d:-346,t:8882,n:'₱8M ÷ PHP57 ÷ ~$447/sh'},
+    {e:'→ RETIREMENT April 2030',d:0,t:8882,n:'Shares at FIRE date (Base)'},
+  ];
+  document.getElementById('wfBody').innerHTML=wf.map((r,i)=>{
+    const isRet=i===wf.length-1;
+    return `<tr class="${isRet?'wf-ret':''}"><td class="l">${r.e}</td><td style="color:${r.d>0?'var(--gn)':r.d<0?'var(--rd)':'var(--mu)'}">${r.d===0?'—':(r.d>0?'+':'')+r.d.toLocaleString()}</td><td style="font-weight:${isRet?700:400};color:${isRet?'var(--gn)':'var(--tx)'}">${r.t.toLocaleString()}</td><td class="l mu" style="font-size:9px">${r.n}</td></tr>`;
+  }).join('');
+}
+
+// Milestones
+function renderMilestones(data){
+  const yrs=[2030,2035,2038,2040,2044,2045,2050,2055,2060];
+  const notes={2030:'🎉 Retire April',2035:'🏝 Palawan build',2038:'⚠ Peak spend ₱15M',2040:'Averdeen maint.+San Juan',2044:'⭐ Age 60 SSS pension',2045:'Lauren+Celine college done',2050:'All builds complete',2055:'Legacy phase',2060:'Projection end'};
+  document.getElementById('mileTbody').innerHTML=yrs.map(y=>{
+    const b=data.bear.find(r=>r.yr===y),m=data.base.find(r=>r.yr===y),u=data.bull.find(r=>r.yr===y);
+    if(!b||!m||!u) return '';
+    const cls=y===2030?'ret':y===2044?'a60':y===2038?'peak':'';
+    return `<tr class="${cls}"><td class="l"><b>${y}</b> · Age ${age(y)}</td><td class="rd">${f0(b.combined)}</td><td class="gn" style="font-weight:700">${f0(m.combined)}</td><td class="am">${f0(u.combined)}</td><td class="rd">${b.swr}%</td><td class="gn" style="font-weight:700">${m.swr}%</td><td class="am">${u.swr}%</td><td class="l mu" style="font-size:9px">${notes[y]||''}</td></tr>`;
+  }).join('');
+}
+
+// Projection chart
+function renderChart(data,I){
+  ['all','brk','mc'].forEach(v=>{const el=document.getElementById('v-'+v);if(el)el.className='bv'+(v===view?' act':'');});
+  document.getElementById('chartTag').textContent=view==='mc'?'Monte Carlo P10–P90':view==='brk'?`Breakdown · ${scenario}`:'Bear / Base / Bull';
+  let datasets=[],labels=data.base.map(r=>r.yr);
+  if(view==='all'){
+    document.getElementById('mcStats').style.display='none';
+    [{k:'bear',c:'#f05454',l:'Bear 5%'},{k:'base',c:'#00d68f',l:'Base'},{k:'bull',c:'#f7b731',l:'Bull 18%'}].forEach(sc=>datasets.push({label:sc.l,data:data[sc.k].map(r=>r.combined/1e6),borderColor:sc.c,fill:false,tension:.35,borderWidth:sc.k===scenario?2.5:1.5,borderDash:sc.k==='bear'?[6,4]:sc.k==='bull'?[3,3]:[],pointRadius:0,pointHoverRadius:3,backgroundColor:'transparent'}));
+    document.getElementById('projLeg').innerHTML=[{c:'#f05454',l:'Bear 5%'},{c:'#00d68f',l:'Base 12%'},{c:'#f7b731',l:'Bull 18%'}].map(x=>`<div class="li"><div class="ll" style="background:${x.c}"></div>${x.l}</div>`).join('');
+  } else if(view==='brk'){
+    document.getElementById('mcStats').style.display='none';
+    datasets=[{label:'AAPL',data:data[scenario].map(r=>r.aaplVal/1e6),borderColor:'#00d68f',fill:false,tension:.35,borderWidth:2,pointRadius:0},{label:'IBKR',data:data[scenario].map(r=>r.ibkr/1e6),borderColor:'#3db8f5',fill:false,tension:.35,borderWidth:2,pointRadius:0},{label:'Combined',data:data[scenario].map(r=>r.combined/1e6),borderColor:'#f7b731',fill:false,tension:.35,borderWidth:2,borderDash:[4,3],pointRadius:0}];
+    document.getElementById('projLeg').innerHTML=[{c:'#00d68f',l:'AAPL'},{c:'#3db8f5',l:'IBKR'},{c:'#f7b731',l:'Combined'}].map(x=>`<div class="li"><div class="ll" style="background:${x.c}"></div>${x.l}</div>`).join('');
+  } else {
+    const mc=runMC(I);
+    document.getElementById('mcStats').style.display='grid';
+    const fp=mc.pcts[2060];
+    document.getElementById('mcStats').innerHTML=[{v:f0(fp.p90),l:'P90 2060',c:'var(--gn)'},{v:f0(fp.p75),l:'P75 2060',c:'var(--te)'},{v:f0(fp.p50),l:'Median',c:'var(--tx)'},{v:f0(fp.p25),l:'P25 2060',c:'var(--am)'},{v:f0(Math.max(0,fp.p10)),l:'P10 2060',c:'var(--rd)'}].map(s=>`<div class="mc-s"><div class="mc-v" style="color:${s.c}">${s.v}</div><div class="mc-l">${s.l}</div></div>`).join('');
+    datasets=[{label:'P90',data:mc.years.map(y=>mc.pcts[y].p90/1e6),borderColor:'rgba(63,185,80,.5)',fill:false,tension:.35,borderWidth:1,pointRadius:0},{label:'P75',data:mc.years.map(y=>mc.pcts[y].p75/1e6),borderColor:'rgba(0,214,143,.6)',fill:'-1',tension:.35,borderWidth:1,pointRadius:0,backgroundColor:'rgba(0,214,143,.07)'},{label:'P50',data:mc.years.map(y=>mc.pcts[y].p50/1e6),borderColor:'#00d68f',fill:'-1',tension:.35,borderWidth:2.5,pointRadius:0,backgroundColor:'rgba(0,214,143,.1)'},{label:'P25',data:mc.years.map(y=>mc.pcts[y].p25/1e6),borderColor:'rgba(247,183,49,.6)',fill:'-1',tension:.35,borderWidth:1,pointRadius:0,backgroundColor:'rgba(247,183,49,.07)'},{label:'P10',data:mc.years.map(y=>mc.pcts[y].p10/1e6),borderColor:'rgba(240,84,84,.5)',fill:'-1',tension:.35,borderWidth:1,pointRadius:0,backgroundColor:'rgba(240,84,84,.05)'}];
+    document.getElementById('projLeg').innerHTML='';
+    labels=mc.years;
+  }
+  mkChart('projChart',{type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#0a1628',borderColor:'#1a2d48',borderWidth:1,padding:10,titleColor:tc,bodyColor:'#cfe0f0',titleFont:{family:'IBM Plex Mono',size:9},bodyFont:{family:'IBM Plex Mono',size:10},callbacks:{title:i=>`${i[0].label} · Age ${age(parseInt(i[0].label))}`,label:i=>` ${i.dataset.label}: $${i.parsed.y.toFixed(2)}M`}}},scales:{...defScales,y:{...defScales.y,ticks:{...defScales.y.ticks,callback:v=>'$'+v.toFixed(1)+'M'}}}}});
+}
+
+// Withdrawal
+function renderWD(I){
+  const cols=WD_SCHED.map(w=>w.p>=10?'#f05454':w.p>=7?'#f7b731':'#00d68f');
+  mkChart('wdChart',{type:'bar',data:{labels:WD_SCHED.map(w=>w.y),datasets:[{label:'₱M',data:WD_SCHED.map(w=>w.p),backgroundColor:cols,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{...defScales,y:{...defScales.y,ticks:{...defScales.y.ticks,callback:v=>`₱${v}M`}}}}});
+  document.getElementById('wdTbody').innerHTML=WD_SCHED.map(w=>{
+    const usd=w.p*1e6/I.php,condo=w.y>=2030?I.rent*12/I.php:0,al=(w.y>=2031&&w.y<=2033)?I.alex*(1/I.sgd)*12:0,net=Math.max(0,usd-condo-al),hi=w.p>=10;
+    return `<tr><td style="font-weight:700;color:${hi?'var(--rd)':w.p>=7?'var(--am)':'var(--tx)'}">${w.y}</td><td style="color:${hi?'var(--rd)':w.p>=7?'var(--am)':'var(--tx)'};font-weight:${hi?700:400}">₱${w.p}M</td><td>${f0(usd)}</td><td class="gn">${condo+al>0?f0(condo+al):'—'}</td><td>${f0(net)}</td><td class="l mu" style="font-size:8.5px">${w.n}</td><td class="mu">${age(w.y)}</td></tr>`;
+  }).join('');
+}
+
+// Proj table
+function renderProjTable(data){
+  document.getElementById('projTag').textContent=`${scenario.charAt(0).toUpperCase()+scenario.slice(1)} · 2030–2060`;
+  const cc=scenario==='bear'?'rd':scenario==='bull'?'am':'gn';
+  const rows=data[scenario];
+  const prev=(yr)=>{const p=rows.find(r=>r.yr===yr-1);return p?p.sh:null;};
+  document.getElementById('projTbody').innerHTML=rows.filter(r=>r.yr>=2030).map(r=>{
+    const isRet=r.yr===2030,isPk=r.yr===2038,isA60=r.yr===2044;
+    const cls=isRet?'ret':isPk?'peak':isA60?'a60':'';
+    const sold=prev(r.yr)!==null?r.sh-prev(r.yr):0;
+    const swrC=parseFloat(r.swr)<2?'gn':parseFloat(r.swr)<3.5?'':'rd';
+    return `<tr class="${cls}"><td class="l" style="font-weight:${isRet?700:400}">${r.yr} · Age ${age(r.yr)}</td><td class="mu">$${r.ap.toLocaleString()}</td><td class="mu">${r.sh.toLocaleString()}</td><td class="${cc}">${f0(r.aaplVal)}</td><td class="ph">₱${r.expPHP}M</td><td>${f0(r.netExp)}</td><td class="gn">${f0(r.div)}</td><td>${sold<-0.05?`<span class="rd">${sold.toFixed(1)}</span>`:'<span class="mu">—</span>'}</td><td class="bl">${f0(r.ibkr)}</td><td class="${cc}" style="font-weight:700">${f0(r.combined)}</td><td class="${swrC}">${r.swr}%</td></tr>`;
+  }).join('');
+}
+
+// Layoff
+function renderLayoff(data,I){
+  const annExp=I.spend*12/I.php;
+  const card=(yr,borderCol,scl)=>{
+    const b=data.base.find(r=>r.yr===yr),be=data.bear.find(r=>r.yr===yr);
+    const r30=data.base.find(r=>r.yr===2030);
+    if(!b||!be||!r30) return '';
+    const gap=r30.combined-b.combined,swrB=(annExp/b.combined*100).toFixed(2),swrBe=(annExp/be.combined*100).toFixed(2);
+    const fund=(b.combined/(187e6/I.php)*100).toFixed(0);
+    const lostSh=yr===2028?921:544;
+    return `<div style="background:var(--s2);border-radius:9px;padding:13px;border-top:3px solid ${borderCol}"><div style="font-size:11px;font-weight:700;margin-bottom:9px;color:${borderCol}">Layoff ${yr} — Retire ${2030-yr} yr${2030-yr!==1?'s':''} Early · Age ${age(yr)}</div><div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid var(--bd);font-family:'IBM Plex Mono',monospace"><span>Portfolio (Base)</span><b>${f0(b.combined)}</b></div><div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid var(--bd);font-family:'IBM Plex Mono',monospace"><span>Portfolio (Bear)</span><span class="rd">${f0(be.combined)}</span></div><div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid var(--bd);font-family:'IBM Plex Mono',monospace"><span>Gap vs planned 2030</span><span class="rd">−${f0(gap)}</span></div><div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid var(--bd);font-family:'IBM Plex Mono',monospace"><span>Unvested shares lost</span><span class="rd">~${lostSh.toLocaleString()} sh</span></div><div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid var(--bd);font-family:'IBM Plex Mono',monospace"><span>SWR Base</span><b class="gn">${swrB}%</b></div><div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid var(--bd);font-family:'IBM Plex Mono',monospace"><span>SWR Bear</span><b style="color:${parseFloat(swrBe)<4?'var(--gn)':'var(--am)'}">${swrBe}%</b></div><div style="display:flex;justify-content:space-between;font-size:9px;padding:3px 0;font-family:'IBM Plex Mono',monospace"><span>Lifetime funded</span><b style="color:${parseFloat(fund)>=100?'var(--gn)':'var(--am)'}">${fund}%</b></div><div class="alert alert-g" style="margin-top:8px;font-size:8.5px">${yr===2028?'✅ Viable. Scale Averdeen to ₱12–15M. Alex income covers all CoL 2030–33 — zero portfolio drawdown for 3 years.':'✅ Strongly viable. Nearly identical to planned April 2030 retirement. Treat as soft FIRE trigger.'}</div></div>`;
+  };
+  document.getElementById('layoffCards').innerHTML=card(2028,'var(--rd)')+card(2029,'var(--am)');
+}
+
+// Budget donut
+function renderBudget(){
+  const tot=BUDGET_ITEMS.reduce((s,b)=>s+b.p,0);
+  mkChart('budgetDnt',{type:'doughnut',data:{labels:BUDGET_ITEMS.map(b=>b.c),datasets:[{data:BUDGET_ITEMS.map(b=>b.p),backgroundColor:BUDGET_ITEMS.map(b=>b.col),borderColor:'#0f1e38',borderWidth:2}]},options:{cutout:'64%',plugins:{legend:{display:false},tooltip:{backgroundColor:'#0a1628',borderColor:'#1a2d48',borderWidth:1,callbacks:{label:c=>`₱${c.parsed}M (${(c.parsed/tot*100).toFixed(0)}%)`}}}}});
+  document.getElementById('budgetLeg').innerHTML=BUDGET_ITEMS.slice(0,8).map(b=>`<div class="leg-i"><div class="leg-d" style="background:${b.col}"></div><span>${b.c}</span></div>`).join('');
+  document.getElementById('budgetTbody').innerHTML=BUDGET_ITEMS.map(b=>`<tr><td class="l">${b.c}</td><td style="font-weight:600;font-family:'IBM Plex Mono',monospace">₱${b.p}M</td><td class="mu" style="font-family:'IBM Plex Mono',monospace">${(b.p/tot*100).toFixed(0)}%</td><td class="l mu" style="font-size:8.5px">${b.n||''}</td></tr>`).join('');
+}
+
+// Monthly
+function renderMonthly(I){
+  document.getElementById('monthlyTbody').innerHTML=MONTHLY_BUDGET.map(m=>`<tr><td class="l">${m.c}</td><td style="font-family:'IBM Plex Mono',monospace">${m.p.toLocaleString()}</td><td class="mu" style="font-family:'IBM Plex Mono',monospace">${(m.p*12).toLocaleString()}</td></tr>`).join('');
+  document.getElementById('annualUSD').textContent=f0(I.spend*12/I.php);
+  document.getElementById('annualUSD-s').textContent=`₱${(I.spend*12).toLocaleString()}/yr ÷ PHP ${I.php}`;
+  document.getElementById('alexVal').textContent=`₱${Math.round(I.alex*(1/I.sgd)*I.php*12/1e6)}M/yr`;
+}
+
+// Risk
+function renderRisk(){
+  document.getElementById('riskReg').innerHTML=RISKS.map(r=>{
+    const sClass=r.s==='crit'?'crit':r.s==='high'?'high':'med';
+    const sLabel=r.s==='crit'?'Critical':r.s==='high'?'High':'Medium';
+    return `<div class="rc ${sClass}"><div class="rsev"><div class="rdot"></div><div class="rsl">${sLabel}</div></div><div class="rtitle">${r.t}</div><div class="rdet">${r.d}</div><div class="rfix">→ ${r.f}</div></div>`;
+  }).join('');
+}
+
+// Export
+function exportCSV(){
+  const I=getI(),d={bear:project('bear',I),base:project('base',I),bull:project('bull',I)};
+  let csv='Year,Age,Bear NW,Base NW,Bull NW,SWR Base%\n';
+  d.base.forEach((r,i)=>csv+=`${r.yr},${age(r.yr)},${d.bear[i].combined},${r.combined},${d.bull[i].combined},${r.swr}\n`);
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([csv],{type:'text/csv'})),download:'fire_v5.csv'});
+  a.click();
+}
+
+// Scenario / View
+function setScenario(s){
+  scenario=s;
+  ['bear','base','bull'].forEach(k=>{const el=document.getElementById('b-'+k);if(el)el.className=`scn-b ${k}${k===s?' act':''}`;});
+  const I=getI();renderChart(_data,I);renderProjTable(_data);renderKPIs(I,_data);
+}
+function setView(v){view=v;renderChart(_data,getI());}
+
+// Master update
+function updateAll(){
+  const I=getI();
+  _data={bear:project('bear',I),base:project('base',I),bull:project('bull',I)};
+  renderCountdown();renderKPIs(I,_data);renderPortfolio(I);renderAlloc(I);
+  renderSnap2030(I);renderMilestones(_data);renderChart(_data,I);
+  renderWD(I);renderProjTable(_data);renderLayoff(_data,I);
+  renderBudget();renderMonthly(I);renderRisk();
+}
+
+window.addEventListener('DOMContentLoaded',updateAll);
+</script>
+</body>
+</html>
