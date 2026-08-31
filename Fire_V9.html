@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FIRE Dashboard V9 — Jasper</title>
+<style>
+:root{
+  --bg:#0a0e1a; --bg2:#111827; --bg3:#0f172a; --line:#1e2b45;
+  --ink:#e9edf6; --dim:#93a0bd; --faint:#5c6785;
+  --gold:#fbbf24; --green:#34d399; --red:#f87171; --blue:#60a5fa; --violet:#a78bfa;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5}
+::selection{background:rgba(251,191,36,.3)}
+.wrap{max-width:1500px;margin:0 auto;padding:0 20px 80px}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:50;background:rgba(10,14,26,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(251,191,36,.2);margin:0 -20px 28px;padding:0 20px}
+.hbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px 0}
+.logo{display:flex;align-items:center;gap:12px}
+.badge9{height:38px;width:38px;border-radius:10px;background:linear-gradient(135deg,#fcd34d,#f59e0b);color:#000;display:grid;place-items:center;font-weight:900;font-size:15px}
+.logo h1{font-size:16px;font-weight:700;letter-spacing:-.01em;line-height:1.1}
+.logo h1 span{color:var(--gold)}
+.logo .sub{font-size:10px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase;margin-top:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:11px;padding:6px 12px;border-radius:20px;background:var(--bg2);border:1px solid var(--line)}
+.chip b{color:var(--ink)}
+.chip.gold{background:var(--gold);color:#000;font-weight:700;border-color:#fcd34d}
+.chip.green{background:var(--green);color:#000;font-weight:700}
+.yrs{display:flex;gap:6px}
+.yrs button{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;border:1px solid var(--line);background:var(--bg2);color:var(--dim);cursor:pointer}
+.yrs button.on{background:var(--gold);color:#000;border-color:#fcd34d}
+/* controls */
+.ctrls{border-top:1px solid rgba(255,255,255,.05);background:rgba(15,23,42,.6);margin:0 -20px;padding:10px 20px;display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.ctrls label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--dim)}
+.ctrls select{background:var(--bg2);border:1px solid var(--line);color:var(--ink);border-radius:6px;padding:6px 8px;font-size:11px}
+input[type=range]{accent-color:var(--gold);width:100%}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:20px}
+.c12{grid-column:span 12}.c7{grid-column:span 7}.c5{grid-column:span 5}.c6{grid-column:span 6}.c8{grid-column:span 8}.c4{grid-column:span 4}
+h2{font-size:15px;font-weight:700;letter-spacing:.01em;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+h2 .tag{font-size:10px;font-weight:400;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
+h3{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;font-weight:600}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+.kpi{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:16px}
+.kpi .l{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:8px;font-family:var(--mono)}
+.kpi .n{font-size:24px;font-weight:800;letter-spacing:-.02em}
+.kpi .s{font-size:11px;color:var(--dim);margin-top:4px}
+.kpi.good .n{color:var(--green)} .kpi.gold .n{color:var(--gold)} .kpi.warn .n{color:var(--gold)}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px}
+th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);padding:8px 6px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg2)}
+td{padding:7px 6px;border-top:1px solid rgba(255,255,255,.05)}
+.r{text-align:right}.c{text-align:center}
+.pos{color:var(--green)}.neg{color:var(--red)}.g{color:var(--gold)}
+.scroll{overflow:auto;max-height:400px;border:1px solid var(--line);border-radius:12px;background:rgba(15,23,42,.4)}
+canvas{width:100%;display:block;background:var(--bg3);border-radius:12px;border:1px solid rgba(255,255,255,.05)}
+.note{font-size:11px;line-height:1.6;color:var(--dim);margin-top:12px}
+.note b{color:var(--gold)}
+
+/* gate tracker */
+.gate{display:flex;align-items:flex-start;gap:12px;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg3);margin-bottom:8px;cursor:pointer;transition:.15s}
+.gate:hover{border-color:rgba(251,191,36,.3)}
+.gate .box{height:22px;width:22px;flex-shrink:0;border-radius:6px;border:2px solid var(--faint);display:grid;place-items:center;margin-top:1px;font-weight:900;font-size:14px}
+.gate.done{background:rgba(52,211,153,.06);border-color:rgba(52,211,153,.3)}
+.gate.done .box{background:var(--green);border-color:var(--green);color:#000}
+.gate .t{font-size:13px;font-weight:600}
+.gate .d{font-size:11px;color:var(--dim);margin-top:2px}
+.verdict{margin-top:14px;padding:16px;border-radius:14px;text-align:center;font-weight:800;font-size:16px;transition:.2s}
+.verdict.no{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red)}
+.verdict.go{background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.4);color:var(--green)}
+
+/* stress table highlight */
+tr.floor td{background:rgba(251,191,36,.08)}
+tr.retire td{background:rgba(52,211,153,.06)}
+
+.pill{display:inline-block;font-size:11px;padding:5px 11px;border-radius:20px;background:var(--bg3);border:1px solid var(--line);margin:0 6px 6px 0}
+.pill b{color:var(--gold)}
+.foot{grid-column:span 12;font-size:10px;line-height:1.6;color:var(--faint);background:var(--bg3);border:1px solid var(--line);border-radius:12px;padding:14px}
+.foot b{color:var(--gold)}
+@media(max-width:1000px){.grid>*{grid-column:span 12!important}.kpis{grid-template-columns:repeat(2,1fr)}.ctrls{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="hbar">
+    <div class="logo">
+      <div class="badge9">F9</div>
+      <div>
+        <h1>FIRE DASHBOARD <span>V9</span> · LIQUID ONLY</h1>
+        <div class="sub">Buffett realism · $3.5M liquid today · walk-away gates · FX-fixed ₱62.25</div>
+      </div>
+    </div>
+    <div class="chips">
+      <div class="chip gold">LIQUID NW TODAY: $3.50M</div>
+      <div class="chip" id="chip-60">AT 60 (2045) BASE <b id="c60">—</b></div>
+      <div class="chip green" id="chip-verdict">GATES: — / 6</div>
+    </div>
+    <div class="yrs" id="yrs">
+      <button data-y="2028">2028</button>
+      <button data-y="2029" class="on">2029</button>
+      <button data-y="2030">2030</button>
+    </div>
+  </div>
+  <div class="ctrls">
+    <label>SCENARIO
+      <select id="scn"><option value="bear">Bear 4% / 16% vol</option><option value="base" selected>Base 6% / 14% vol</option><option value="bull">Bull 8% / 12% vol</option></select>
+    </label>
+    <label>AAPL $<span id="l-aapl">319.71</span><input type="range" id="i-aapl" min="250" max="450" step="1" value="319.71"></label>
+    <label>Spend ₱<span id="l-spend">190</span>k/mo<input type="range" id="i-spend" min="150" max="250" step="5" value="190"></label>
+    <label>Occupancy <span id="l-occ">85</span>%<input type="range" id="i-occ" min="0" max="100" step="5" value="85"></label>
+    <label>USD/PHP <span id="l-php">62.25</span><input type="range" id="i-php" min="55" max="70" step="0.25" value="62.25"></label>
+    <label>USD/SGD <span id="l-sgd">1.271</span><input type="range" id="i-sgd" min="1.20" max="1.35" step="0.005" value="1.271"></label>
+  </div>
+</header>
+
+<div class="kpis" id="kpis">
+  <div class="kpi gold"><div class="l">Liquid Net Worth</div><div class="n">$3.50M</div><div class="s" id="k-php">₱217.9M · excludes property</div></div>
+  <div class="kpi"><div class="l">Walk-away target</div><div class="n g">$4.00M</div><div class="s" id="k-gap">Gap to go: $0.50M</div></div>
+  <div class="kpi good"><div class="l">Yr-1 SWR (recurring)</div><div class="n" id="k-swr">0.92%</div><div class="s">₱2.28M / yr living</div></div>
+  <div class="kpi good"><div class="l">MC Success to 2060</div><div class="n" id="k-succ">—</div><div class="s">500 sims, withdrawals in</div></div>
+  <div class="kpi warn"><div class="l">AAPL concentration</div><div class="n">82.3%</div><div class="s">the real risk, not SWR</div></div>
+</div>
+
+<div class="grid">
+
+  <!-- WALK-AWAY GATE TRACKER -->
+  <div class="card c5">
+    <h2>🚦 Walk-Away Gate Tracker <span class="tag">the real "can I quit" test</span></h2>
+    <div id="gates"></div>
+    <div class="verdict no" id="verdict">TICK THE GATES →</div>
+    <div class="note">The date (2028 vs 2029) is secondary. These six gates are what actually make $4M liquid into <b>real independence</b> rather than a big number stuck in one stock. Tick them as you complete them.</div>
+  </div>
+
+  <!-- REAL-RETURN FLOOR STRESS -->
+  <div class="card c7">
+    <h2>🧊 Real-Return Floor Test <span class="tag">₱187M waterfall run against a $4M start</span></h2>
+    <div class="scroll" style="max-height:none">
+      <table id="floor"></table>
+    </div>
+    <div class="note">
+      <b>Read the 0% row.</b> Even if your $4M earns <i>nothing above inflation</i> for 34 years, you fund every peso of the ₱187M plan — Averdeen, both educations, cars, solar, Palawan, Lipa, San Juan — and still finish with money left. That is the definition of over-funded. Everything above 0% is surplus / inheritance, not safety. This is exactly why waiting past $4M mostly manufactures a terminal surplus you may regret working for.
+    </div>
+  </div>
+
+  <!-- LIQUID PROJECTION -->
+  <div class="card c8">
+    <h2>💧 Liquid Net Worth Projection 2026–2060 <span class="tag">realistic 4/6/8% · withdrawals included · cap $15M</span></h2>
+    <div style="position:relative"><canvas id="proj" height="330"></canvas>
+      <div id="tip" style="position:absolute;display:none;pointer-events:none;background:rgba(10,14,26,.95);border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:8px 10px;font-family:var(--mono);font-size:11px;z-index:5"></div>
+    </div>
+    <div style="margin-top:12px">
+      <span class="pill">2026 start ≈ <b id="p26">—</b></span>
+      <span class="pill">2030 base ≈ <b id="p30">—</b></span>
+      <span class="pill">2045 / age 60 base ≈ <b id="p45">—</b></span>
+      <span class="pill">2060 base ≈ <b id="p60">—</b></span>
+    </div>
+    <div class="note"><b>No Bezos illusion.</b> Growth tapers realistically (base 6% after fees & taxes), all ₱187M scheduled withdrawals are subtracted, and passive income (rent/dividends/SSS) is tracked separately — not double-counted here. Your gut of $8–10M at 60 lands right on the base case. ✓</div>
+  </div>
+
+  <!-- BUCKETS -->
+  <div class="card c4">
+    <h2>🪣 3-Bucket Architecture</h2>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="padding:12px;border-radius:12px;border:1px solid rgba(52,211,153,.25);background:rgba(52,211,153,.05)">
+        <h3 style="color:var(--green);margin-bottom:6px">① Retirement cash · HYSA</h3>
+        <div style="font-family:var(--mono);font-size:12px">2–3 yrs living = <b class="g" id="b1">₱4.6–6.8M</b></div>
+        <div class="note" style="margin-top:4px">Never sell AAPL into a crash. This is your SORR shield + emergency float.</div>
+      </div>
+      <div style="padding:12px;border-radius:12px;border:1px solid rgba(251,191,36,.25);background:rgba(251,191,36,.05)">
+        <h3 style="color:var(--gold);margin-bottom:6px">② Known capex · de-risk on approach</h3>
+        <div style="font-family:var(--mono);font-size:12px">2027–29 cluster ≈ <b class="g">₱30M</b></div>
+        <div class="note" style="margin-top:4px">Averdeen + education + furniture. Move out of AAPL as dates near — don't hold a build budget in one stock.</div>
+      </div>
+      <div style="padding:12px;border-radius:12px;border:1px solid rgba(96,165,250,.25);background:rgba(96,165,250,.05)">
+        <h3 style="color:var(--blue);margin-bottom:6px">③ Permanent portfolio</h3>
+        <div style="font-family:var(--mono);font-size:12px">AAPL → CSPX/VWRA core; AMZN/GOOGL satellite ≤20%</div>
+        <div class="note" style="margin-top:4px">Everything else stays invested — this is the compounding engine.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALLOCATION + NW TOGGLE -->
+  <div class="card c5">
+    <h2>💰 Net Worth Allocation <span class="tag" id="alloc-tag">liquid · no property</span></h2>
+    <div class="yrs" id="nwtog" style="margin-bottom:12px">
+      <button data-v="liquid" class="on">Liquid</button>
+      <button data-v="illiquid">Non-Liquid</button>
+      <button data-v="combined">Combined</button>
+    </div>
+    <canvas id="donut" height="200"></canvas>
+    <div class="scroll" style="margin-top:12px"><table id="alloc"></table></div>
+    <div class="note" id="nw-note"><b>Liquid</b> = investable/spendable ($3.50M). <b>Non-liquid</b> = property (₱38.56M market, reference only). <b>Combined</b> = full balance sheet, shown for completeness — the FIRE math still only ever draws on liquid.</div>
+  </div>
+
+  <!-- NET WORTH MILESTONES -->
+  <div class="card c7">
+    <h2>🏔️ Net Worth Milestones <span class="tag">liquid · base 6% · net of ₱187M withdrawals</span></h2>
+    <div class="scroll" style="max-height:none"><table id="miles"></table></div>
+    <div class="note">Each milestone is the first year the <b>base-case liquid</b> line crosses that level <i>after</i> the year's scheduled spend — a real crossing, not gross. Your <b>$4M walk-away</b> line and <b>age-60 ($8–10M gut)</b> target are flagged. Milestone years shift live with the AAPL / FX / scenario controls.</div>
+  </div>
+
+  <!-- INCOME-GENERATING ASSETS -->
+  <div class="card c12">
+    <h2>🪙 Income-Generating Assets <span class="tag"><b style="color:var(--gold)">NOT counted in net worth</b> · cash-flow you can draw from instead of selling shares</span></h2>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px" id="inc-kpi"></div>
+    <div class="scroll" style="max-height:360px"><table id="income"></table></div>
+    <canvas id="incchart" height="130" style="margin-top:12px"></canvas>
+    <div class="note">
+      <b>LTG &amp; CREIT — quarterly, DRIP-reinvested.</b> LTG ~2.5% yield, CREIT ~6.5% yield. Every dividend now→retirement is reinvested, so balances compound and the (quarterly) payout grows with them (LTG value +3%/yr, CREIT +2%/yr). Table shows the annual total; ÷4 ≈ per quarter.
+      <b>AAPL dividend</b> ≈0.5% yield, growing ~4%/yr — but computed on your <b>shrinking</b> share count as the engine sells down, so it fades honestly rather than pretending shares stay flat.
+      <b>Rentals</b>: two condos ₱15k + ₱20k today, stepped up <b>conservatively</b> (≈+₱2k per unit every ~5 yrs), shown at your occupancy slider.
+      <b>SSS</b> pension from age 60 (2045): ₱13k/mo +13th, +2% COLA.
+      <b>None of this touches the $3.5M net worth</b> — it's the drawable income that lets AAPL keep compounding.
+    </div>
+  </div>
+
+  <!-- AAPL ENGINE -->
+  <div class="card c7">
+    <h2>🍎 AAPL Drawdown Engine <span class="tag">shares remaining after each year's sale</span></h2>
+    <canvas id="aapl" height="150"></canvas>
+    <div class="scroll" style="margin-top:12px;max-height:320px"><table id="eng"></table></div>
+    <div class="note">Net sold = max(scheduled − passive offset, 0). Passive offset = rent(@occ) + ~0.5% AAPL dividend. At base 6% the engine lasts to roughly <b>2048–50</b> even carrying the full ₱187M waterfall.</div>
+  </div>
+
+  <!-- WITHDRAWAL SCHEDULE -->
+  <div class="card c7">
+    <h2>💵 Withdrawal Schedule 2027–2060 <span class="tag">₱187M total, staggered</span></h2>
+    <div class="scroll" style="max-height:340px"><table id="wd"></table></div>
+  </div>
+
+  <!-- SWR / MONTE CARLO -->
+  <div class="card c5">
+    <h2>🎯 SWR & Monte Carlo <span class="tag">500 sims · vol <span id="volt">14</span>%</span></h2>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px">
+      <div style="padding:10px;border-radius:10px;background:var(--bg3)"><div class="l" style="font-size:10px;color:var(--faint);font-family:var(--mono)">RECURRING SWR</div><div class="g" style="font-weight:800;font-size:18px">0.92%</div><div class="note" style="margin-top:0">₱2.28M living / $4M</div></div>
+      <div style="padding:10px;border-radius:10px;background:var(--bg3)"><div class="l" style="font-size:10px;color:var(--faint);font-family:var(--mono)">BLENDED (avg capex yr)</div><div class="g" style="font-weight:800;font-size:18px" id="swrb">2.21%</div><div class="note" style="margin-top:0">₱187M ÷ 34yr avg</div></div>
+      <div style="padding:10px;border-radius:10px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2)"><div class="l" style="font-size:10px;color:var(--faint);font-family:var(--mono)">MC SUCCESS</div><div class="pos" style="font-weight:800;font-size:18px" id="mcs">—</div><div class="note" style="margin-top:0">to 2060, liquid</div></div>
+      <div style="padding:10px;border-radius:10px;background:var(--bg3)"><div class="l" style="font-size:10px;color:var(--faint);font-family:var(--mono)">MEDIAN TERMINAL</div><div style="font-weight:800;font-size:16px" id="mcm">—</div><div class="note" style="margin-top:0">2060 PHP</div></div>
+    </div>
+    <canvas id="mc" height="150"></canvas>
+    <div class="note">Classic 4% rule cleared by ~4×. Every scenario's failure mode is a sequence-of-returns hit in the 2027–29 capex cluster — which the HYSA bucket exists to absorb.</div>
+  </div>
+
+  <!-- PROPERTY -->
+  <div class="card c12">
+    <h2>🏠 Property — Non-Liquid, Excluded From FIRE Math <span class="tag">reference only</span></h2>
+    <div class="scroll" style="max-height:none"><table id="prop"></table></div>
+    <div class="note">Total market <b id="pm">₱38.56M</b> vs cost ₱18.07M = ₱20.49M unrealized. Deliberately <b>not</b> counted in the $3.5M liquid figure — it's your family's balance sheet & inheritance, not your retirement income engine.</div>
+  </div>
+
+  <div class="foot">
+    <b>V9 changelog vs V7/V8:</b> (1) FX bug fixed — V7's embedded data still carried a stale ₱56.50; V9 uses your ₱62.25 truth throughout. (2) Liquid net worth hard-coded to your own $3.5M (AAPL $2.881M + Etoro $163.7k + IBKR $32.0k + SGD $317k [403,313 SGD ÷ 1.271] + PH $31.8k [1.979M ÷ 62.25] + Collectibles $22k ≈ $3.44M → $3.50M). (3) NEW walk-away gate tracker — turns "$4M → quit" into "$4M + obligations ring-fenced → independent." (4) NEW real-return floor test — proves the ₱187M plan survives even at 0% real. (5) Realistic Buffett math 4/6/8%, cap $15M, all ₱187M withdrawals subtracted, passive income tracked separately (no double-count). Property excluded. Planning estimates only — not investment, tax or legal advice.
+  </div>
+</div>
+</div>
+
+<script>
+/* ================= DATA (Aug 2026 snapshot, your numbers) ================= */
+const P = {
+  aaplShares:9013.19, aaplPrice0:319.71, aaplVal:2881517.80,
+  etoro:163675.86, ibkr:31973.42,
+  endowusSGD:337197.61, ocbcSGD:66115, srsSGD:0.36, totalSGD:403312.97,
+  ph:{LTG:579631.68,CREIT:223115.20,BPI:48695.53,SunLife:54421.94,MP2:685256.10,MP1:52222.98,SSS:336628,total:1979971},
+  collect:22000,
+  liquidTruthUSD:3500000,
+  properties:[
+    {name:"Space Taft",cost:1019000,market:2000000},
+    {name:"Vista Taft",cost:2190810,market:2500000},
+    {name:"Crownasia Valenza",cost:4845834,market:20000000,note:"2 houses · inheritance"},
+    {name:"Averdeen SD",cost:6902250,market:8000000,note:"₱18M build allocated"},
+    {name:"Summit Lipa",cost:700000,market:2061000},
+    {name:"Tago Lango",cost:1564920,market:2000000},
+    {name:"Janao Farm",cost:850000,market:2000000}
+  ]
+};
+const WF = {2027:9,2028:13,2029:8,2030:5,2031:6,2032:4.5,2033:6,2034:5,2035:13,2036:6,2037:6,2038:5.5,2039:6,2040:6,2041:8,2042:6,2043:6,2044:13.5,2045:5,2046:3,2047:4,2048:3,2049:15,2050:2.5,2051:3,2052:2,2053:3,2054:2,2055:3,2056:2,2057:3,2058:2,2059:2,2060:0};
+for(const k in WF) WF[k]*=1e6;
+const PURPOSE={2027:"Averdeen build",2028:"Averdeen+COL+Edu+Furniture",2035:"Palawan house",2044:"San Juan house",2049:"Lipa house"};
+
+const CAGR={bear:0.04,base:0.06,bull:0.08};
+const VOL={bear:0.16,base:0.14,bull:0.12};
+
+/* state */
+let S={year:2029,scn:'base',aapl:319.71,spend:190,occ:85,php:62.25,sgd:1.271,nw:'liquid'};
+
+/* gates */
+const GATES=[
+  {t:"Liquid ≥ $4.0M",d:"Investable/spendable, not counting property."},
+  {t:"HYSA: 2–3 yrs living (₱4.6–6.8M)",d:"Sequence-of-returns shield so you never sell AAPL into a crash."},
+  {t:"2027–29 capex (~₱30M) ring-fenced out of AAPL",d:"Averdeen + education + furniture pre-funded / de-risked."},
+  {t:"SRS exit + final SG income tax reserved",d:"Settle 50%-taxable SRS in a low-income exit year."},
+  {t:"Education sleeve protected",d:"₱25M shared pool carved out of the risk portfolio."},
+  {t:"AAPL de-concentration plan set",d:"Scheduled AAPL→CSPX/VWRA glide path started."}
+];
+let gateState=[false,false,false,false,false,false];
+
+/* ================= helpers ================= */
+const $=id=>document.getElementById(id);
+const usdM=v=>"$"+(v/1e6).toFixed(2)+"M";
+const usdMs=v=>"$"+(v/1e6).toFixed(1)+"M";
+const usd=v=>"$"+Math.round(v).toLocaleString("en-US");
+const php=v=>"₱"+Math.round(v).toLocaleString("en-US");
+const phpM=v=>"₱"+(v/1e6).toFixed(1)+"M";
+
+function liquidUSD(){
+  // rebuild live from AAPL price + FX, then anchor display to user's $3.5M truth ratio
+  let aapl=P.aaplShares*S.aapl;
+  let sgd=P.totalSGD/S.sgd;
+  let phv=P.ph.total/S.php;
+  return aapl+P.etoro+P.ibkr+sgd+phv+P.collect;
+}
+function sharesAtRetire(){ return S.year===2028?9953.195:S.year===2029?10302.195:10650; }
+
+/* ================= projection ================= */
+function project(){
+  const years=[],out={bear:[],base:[],bull:[]};
+  const other0=P.etoro+P.ibkr+P.totalSGD/S.sgd+P.ph.total/S.php+P.collect;
+  for(let y=2026;y<=2060;y++) years.push(y);
+  for(const sc of ['bear','base','bull']){
+    const g=CAGR[sc];
+    let shares=P.aaplShares, price=S.aapl, other=other0;
+    const ramp=S.year-2026, per=ramp>0?(sharesAtRetire()-P.aaplShares)/ramp:0;
+    years.forEach((y,i)=>{
+      if(i>0){ price*=1+g; other*=1+g*0.65; }
+      if(y<=S.year && ramp>0) shares=P.aaplShares+per*(y-2026);
+      if(y>2026){
+        const sched=(WF[y]||0)*(S.spend/190);
+        const passive=(35000*(S.occ/100)*12)+(shares*price*0.005*S.php);
+        const net=Math.max(sched-passive,0);
+        if(y>=S.year && shares>0){
+          let sold=net/S.php/price;
+          if(sold>shares) sold=shares;
+          shares=Math.max(shares-sold,0);
+        }
+      }
+      out[sc].push((shares*price+other)*1); // USD
+    });
+  }
+  return {years,out};
+}
+
+/* ================= AAPL engine table ================= */
+function engine(){
+  const rows=[]; let shares=P.aaplShares, price=S.aapl;
+  const ramp=S.year-2026, per=ramp>0?(sharesAtRetire()-P.aaplShares)/ramp:0;
+  const g=CAGR[S.scn];
+  for(let y=2027;y<=2060;y++){
+    price*=1+g;
+    if(y<=S.year && ramp>0) shares=P.aaplShares+per*(y-2026);
+    const sched=(WF[y]||0)*(S.spend/190);
+    const passive=(35000*(S.occ/100)*12)+(shares*price*0.005*S.php);
+    const net=Math.max(sched-passive,0);
+    let sold=0;
+    if(y>=S.year && shares>0){ sold=net/S.php/price; if(sold>shares)sold=shares; shares=Math.max(shares-sold,0); }
+    rows.push({y,age:41+(y-2026),sched,passive,net,sold,shares,price,val:shares*price});
+  }
+  return rows;
+}
+
+/* ================= monte carlo ================= */
+function randN(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function monte(){
+  const g=CAGR[S.scn], vol=VOL[S.scn];
+  const start=liquidUSD(); const term=[]; let ok=0;
+  for(let s=0;s<500;s++){
+    let bal=start*S.php, fail=false;
+    for(let y=S.year;y<=2060;y++){
+      bal*=1+(g+vol*randN());
+      bal-=(WF[y]||0)*(S.spend/190);
+      if(bal<0){fail=true;break;}
+    }
+    if(!fail)ok++;
+    term.push(Math.max(bal,0));
+  }
+  term.sort((a,b)=>a-b);
+  return {succ:ok/500*100, median:term[250], terms:term};
+}
+
+/* ================= canvas: line proj ================= */
+let projData=null;
+function drawProj(){
+  const cv=$('proj'), r=cv.getBoundingClientRect(); if(!r.width)return;
+  const dpr=devicePixelRatio||1; cv.width=r.width*dpr; cv.height=330*dpr;
+  const x=cv.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0);
+  const W=r.width,H=330,m={l:56,r:14,t:14,b:26},pw=W-m.l-m.r,ph=H-m.t-m.b;
+  x.clearRect(0,0,W,H); x.fillStyle='#0f172a'; x.fillRect(m.l,m.t,pw,ph);
+  const d=projData=project();
+  const CAP=15e6; let mx=0;
+  ['bear','base','bull'].forEach(sc=>d.out[sc].forEach(v=>{if(v>mx)mx=v;}));
+  mx=Math.min(mx,CAP)*1.05; const mn=0;
+  x.strokeStyle='rgba(255,255,255,.06)'; x.fillStyle='rgba(255,255,255,.5)'; x.font='10px ui-monospace'; x.textAlign='right';
+  for(let i=0;i<=4;i++){const yy=m.t+ph*i/4; x.beginPath();x.moveTo(m.l,yy);x.lineTo(m.l+pw,yy);x.stroke(); x.fillText("$"+((mx-i/4*(mx-mn))/1e6).toFixed(0)+"M",m.l-6,yy+3);}
+  x.fillStyle='rgba(251,191,36,.6)'; x.textAlign='left'; x.font='9px ui-monospace'; x.fillText("cap $15M · realistic view",m.l+6,m.t+11);
+  // x labels
+  x.textAlign='center'; x.fillStyle='rgba(255,255,255,.5)';
+  d.years.forEach((yr,i)=>{ if(i%5===0||i===d.years.length-1){const xx=m.l+i/(d.years.length-1)*pw; x.fillText(yr,xx,H-6);} });
+  const cols={bear:'#f87171',base:'#fbbf24',bull:'#34d399'};
+  ['bear','base','bull'].forEach(sc=>{
+    x.beginPath(); x.strokeStyle=cols[sc]; x.lineWidth=sc==='base'?2.6:1.8;
+    d.out[sc].forEach((v,i)=>{const vv=Math.min(v,mx);const xx=m.l+i/(d.years.length-1)*pw;const yy=m.t+(1-(vv-mn)/(mx-mn))*ph; i?x.lineTo(xx,yy):x.moveTo(xx,yy);});
+    x.stroke();
+  });
+  // legend
+  let lx=m.l+8; x.font='10px ui-monospace';
+  [['Bear 4%','#f87171'],['Base 6%','#fbbf24'],['Bull 8%','#34d399']].forEach(([lb,c])=>{x.fillStyle=c;x.fillRect(lx,m.t+2,12,3);x.fillStyle='rgba(255,255,255,.7)';x.textAlign='left';x.fillText(lb,lx+16,m.t+7);lx+=x.measureText(lb).width+34;});
+  cv._geo={m,pw,ph,mx,mn,d};
+  // pills
+  const bi=y=>d.years.indexOf(y);
+  $('p26').textContent=usdM(d.out.base[bi(2026)]);
+  $('p30').textContent=usdM(d.out.base[bi(2030)]);
+  $('p45').textContent=usdM(d.out.base[bi(2045)]);
+  $('p60').textContent=usdM(d.out.base[bi(2060)]);
+  $('c60').textContent=usdM(d.out.base[bi(2045)]);
+}
+$('proj').addEventListener('mousemove',e=>{
+  const cv=$('proj'),g=cv._geo; if(!g)return; const r=cv.getBoundingClientRect();
+  const mxp=e.clientX-r.left; let i=Math.round((mxp-g.m.l)/g.pw*(g.d.years.length-1));
+  i=Math.max(0,Math.min(g.d.years.length-1,i));
+  const tip=$('tip'); const yr=g.d.years[i];
+  tip.style.display='block'; tip.style.left=Math.min(mxp+12,r.width-160)+'px'; tip.style.top='14px';
+  tip.innerHTML=`<b style="color:#fbbf24">${yr} · age ${41+(yr-2026)}</b><br><span style="color:#f87171">Bear ${usdM(g.d.out.bear[i])}</span><br><span style="color:#fbbf24">Base ${usdM(g.d.out.base[i])}</span><br><span style="color:#34d399">Bull ${usdM(g.d.out.bull[i])}</span>${yr===2045?'<br><span style="color:#93a0bd">← age 60 target</span>':''}`;
+});
+$('proj').addEventListener('mouseleave',()=>$('tip').style.display='none');
+
+/* ================= canvas: donut (liquid / illiquid / combined) ================= */
+function nwSegments(){
+  const liquid=[
+    ['AAPL',P.aaplShares*S.aapl,'#fbbf24'],['Etoro',P.etoro,'#34d399'],['IBKR',P.ibkr,'#60a5fa'],
+    ['SGD',P.totalSGD/S.sgd,'#a78bfa'],['PH',P.ph.total/S.php,'#f472b6'],['Collect',P.collect,'#94a3b8']
+  ];
+  const propCols=['#fbbf24','#34d399','#60a5fa','#a78bfa','#f472b6','#fb923c','#22d3ee'];
+  const illiquid=P.properties.map((p,i)=>[p.name,p.market/S.php,propCols[i%propCols.length]]);
+  if(S.nw==='liquid')   return {segs:liquid,   center:'$3.50M', tag:'liquid · no property'};
+  if(S.nw==='illiquid') return {segs:illiquid, center:usdMs(P.properties.reduce((a,b)=>a+b.market,0)/S.php), tag:'property market value'};
+  // combined
+  const liqTot=liquid.reduce((a,b)=>a+b[1],0);
+  const propTot=P.properties.reduce((a,b)=>a+b.market/S.php,0);
+  return {segs:[['Liquid ($3.50M)',3.5e6,'#fbbf24'],['Property',propTot,'#60a5fa']], center:usdMs(3.5e6+propTot), tag:'full balance sheet'};
+}
+function drawDonut(){
+  const cv=$('donut'),r=cv.getBoundingClientRect();if(!r.width)return;
+  const dpr=devicePixelRatio||1;cv.width=r.width*dpr;cv.height=200*dpr;const x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);
+  const W=r.width,H=200; x.clearRect(0,0,W,H);
+  const {segs,center,tag}=nwSegments();
+  $('alloc-tag').textContent=tag;
+  const tot=segs.reduce((a,b)=>a+b[1],0); let ang=-Math.PI/2;
+  const cx=W/2,cy=H/2,R=Math.min(cx,cy)*0.82,r0=R*0.58;
+  segs.forEach(s=>{const a=s[1]/tot*Math.PI*2;x.beginPath();x.moveTo(cx,cy);x.arc(cx,cy,R,ang,ang+a);x.closePath();x.fillStyle=s[2];x.fill();x.strokeStyle='#0a0e1a';x.lineWidth=2;x.stroke();ang+=a;});
+  x.beginPath();x.arc(cx,cy,r0,0,Math.PI*2);x.fillStyle='#0f172a';x.fill();
+  x.fillStyle='#fbbf24';x.font='700 15px ui-monospace';x.textAlign='center';x.textBaseline='middle';x.fillText(center,cx,cy);
+  // table
+  const al=$('alloc');
+  if(S.nw==='liquid'){
+    const rows=[['AAPL vested',P.aaplShares*S.aapl,'82.3%'],['Etoro',P.etoro,'4.7%'],['IBKR',P.ibkr,'0.9%'],
+      ['Endowus/OCBC/SRS (SGD)',P.totalSGD/S.sgd,'9.1%'],['PH LTG/CREIT/MP2…',P.ph.total/S.php,'0.9%'],['Collectibles',P.collect,'0.6%']];
+    al.innerHTML='<thead><tr><th>Liquid asset</th><th class="r">USD</th><th class="r">%</th></tr></thead><tbody>'+
+      rows.map(r=>`<tr><td>${r[0]}</td><td class="r">${usd(r[1])}</td><td class="r">${r[2]}</td></tr>`).join('')+
+      `<tr><td style="color:#fbbf24;font-weight:700">LIQUID TOTAL (truth)</td><td class="r g" style="font-weight:700">$3,500,000</td><td class="r">100%</td></tr></tbody>`;
+  } else if(S.nw==='illiquid'){
+    const pt=P.properties.reduce((a,b)=>a+b.market,0);
+    al.innerHTML='<thead><tr><th>Property</th><th class="r">Market ₱</th><th class="r">USD</th></tr></thead><tbody>'+
+      P.properties.map(p=>`<tr><td>${p.name}</td><td class="r">${php(p.market)}</td><td class="r">${usd(p.market/S.php)}</td></tr>`).join('')+
+      `<tr><td style="color:#60a5fa;font-weight:700">PROPERTY TOTAL</td><td class="r" style="font-weight:700">${php(pt)}</td><td class="r g" style="font-weight:700">${usd(pt/S.php)}</td></tr></tbody>`;
+  } else {
+    const propTot=P.properties.reduce((a,b)=>a+b.market/S.php,0);
+    al.innerHTML='<thead><tr><th>Bucket</th><th class="r">USD</th><th class="r">%</th></tr></thead><tbody>'+
+      `<tr><td>Liquid (drawable)</td><td class="r">${usd(3.5e6)}</td><td class="r">${(3.5e6/(3.5e6+propTot)*100).toFixed(0)}%</td></tr>`+
+      `<tr><td>Property (non-liquid)</td><td class="r">${usd(propTot)}</td><td class="r">${(propTot/(3.5e6+propTot)*100).toFixed(0)}%</td></tr>`+
+      `<tr><td style="color:#fbbf24;font-weight:700">COMBINED BALANCE SHEET</td><td class="r g" style="font-weight:700">${usd(3.5e6+propTot)}</td><td class="r">100%</td></tr></tbody>`;
+  }
+}
+
+/* ================= canvas: aapl bar/line ================= */
+function drawAapl(rows){
+  const cv=$('aapl'),r=cv.getBoundingClientRect();if(!r.width)return;
+  const dpr=devicePixelRatio||1;cv.width=r.width*dpr;cv.height=150*dpr;const x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);
+  const W=r.width,H=150,m={l:44,r:44,t:12,b:22},pw=W-m.l-m.r,ph=H-m.t-m.b; x.clearRect(0,0,W,H);x.fillStyle='#0f172a';x.fillRect(m.l,m.t,pw,ph);
+  const maxSh=Math.max(...rows.map(r=>r.shares),1), maxV=Math.max(...rows.map(r=>r.val),1);
+  const bw=pw/rows.length*0.7;
+  rows.forEach((rr,i)=>{const xx=m.l+i/rows.length*pw+(pw/rows.length-bw)/2;const bh=rr.shares/maxSh*ph;x.fillStyle='#1c3a5e';x.fillRect(xx,m.t+ph-bh,bw,bh);});
+  x.beginPath();x.strokeStyle='#fbbf24';x.lineWidth=2;rows.forEach((rr,i)=>{const xx=m.l+i/rows.length*pw+pw/rows.length/2;const yy=m.t+(1-rr.val/maxV)*ph;i?x.lineTo(xx,yy):x.moveTo(xx,yy);});x.stroke();
+  x.fillStyle='rgba(255,255,255,.5)';x.font='9px ui-monospace';x.textAlign='center';
+  rows.forEach((rr,i)=>{if(i%6===0||i===rows.length-1)x.fillText(rr.y,m.l+i/rows.length*pw+pw/rows.length/2,H-6);});
+  x.textAlign='left';x.fillStyle='#1c3a5e';x.fillText('▮ shares left',m.l,m.t+8);x.fillStyle='#fbbf24';x.textAlign='right';x.fillText('— value $',m.l+pw,m.t+8);
+}
+
+/* ================= canvas: MC histogram ================= */
+function drawMC(mc){
+  const cv=$('mc'),r=cv.getBoundingClientRect();if(!r.width)return;
+  const dpr=devicePixelRatio||1;cv.width=r.width*dpr;cv.height=150*dpr;const x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);
+  const W=r.width,H=150,m={l:44,r:12,t:12,b:22},pw=W-m.l-m.r,ph=H-m.t-m.b;x.clearRect(0,0,W,H);x.fillStyle='#0f172a';x.fillRect(m.l,m.t,pw,ph);
+  const t=mc.terms,lo=t[0],hi=t[t.length-1],B=20,bins=Array(B).fill(0);
+  t.forEach(v=>{let idx=Math.min(B-1,Math.max(0,Math.floor((v-lo)/((hi-lo)||1)*B)));bins[idx]++;});
+  const mxc=Math.max(...bins),bw=pw/B;
+  bins.forEach((c,i)=>{const bh=c/mxc*ph*0.9;const xx=m.l+i*bw+2;x.fillStyle=i<B*0.2?'#f87171':i<B*0.5?'#fbbf24':'#34d399';x.fillRect(xx,m.t+ph-bh,bw-4,bh);});
+  x.fillStyle='rgba(255,255,255,.5)';x.font='9px ui-monospace';x.textAlign='left';x.fillText(phpM(lo),m.l,H-6);x.textAlign='right';x.fillText(phpM(hi),W-m.r,H-6);
+}
+
+/* ================= tables ================= */
+function fillFloor(){
+  const start=4e6*S.php; const rows=[];
+  [0,0.02,0.03,0.04].forEach(real=>{
+    let bal=start,minB=bal;
+    for(let y=2027;y<=2060;y++){bal-=(WF[y]||0);bal*=1+real;if(bal<minB)minB=bal;}
+    rows.push({real,end:bal,min:minB});
+  });
+  $('floor').innerHTML='<thead><tr><th>Real return (after inflation)</th><th class="r">End 2060</th><th class="r">Lowest point</th><th class="r">Verdict</th></tr></thead><tbody>'+
+    rows.map(r=>{
+      const cls=r.real===0?'floor':'';
+      const v = r.min>0 ? '<span class="pos">survives — never runs out</span>' : '<span class="neg">depletes</span>';
+      return `<tr class="${cls}"><td>${(r.real*100).toFixed(0)}%${r.real===0?' · money grows nothing above inflation':''}</td><td class="r g">${phpM(r.end)} · ${usdM(r.end/S.php)}</td><td class="r">${phpM(r.min)}</td><td class="r">${v}</td></tr>`;
+    }).join('')+'</tbody>';
+}
+function fillEngine(rows){
+  $('eng').innerHTML='<thead><tr><th>Yr</th><th class="c">Age</th><th class="r">Scheduled ₱</th><th class="r">Passive</th><th class="r">Net ₱</th><th class="r">Sold</th><th class="r">Left</th><th class="r">Value $</th></tr></thead><tbody>'+
+    rows.map(r=>`<tr${r.y===S.year?' style="background:rgba(251,191,36,.1)"':r.y===2045?' style="background:rgba(251,191,36,.05)"':''}><td>${r.y}${r.y===2045?' ★60':''}</td><td class="c">${r.age}</td><td class="r">${php(r.sched)}</td><td class="r pos">${php(r.passive)}</td><td class="r g">${php(r.net)}</td><td class="r">${r.sold.toFixed(2)}</td><td class="r" style="font-weight:700">${r.shares.toFixed(1)}</td><td class="r">${usd(r.val)}</td></tr>`).join('')+'</tbody>';
+}
+function fillWD(){
+  $('wd').innerHTML='<thead><tr><th>Year</th><th class="r">₱</th><th>Purpose</th><th class="r">USD @FX</th></tr></thead><tbody>'+
+    Object.entries(WF).map(([y,v])=>`<tr><td>${y}</td><td class="r">${php(v)}</td><td style="color:var(--dim)">${PURPOSE[y]||'COL / Edu / Maint'}</td><td class="r" style="opacity:.7">${usd(v/S.php)}</td></tr>`).join('')+'</tbody>';
+}
+function fillProp(){
+  $('prop').innerHTML='<thead><tr><th>Property</th><th class="r">Cost</th><th class="r">Market</th><th class="r">Gain</th><th>Note</th></tr></thead><tbody>'+
+    P.properties.map(p=>`<tr><td>${p.name}</td><td class="r">${php(p.cost)}</td><td class="r">${php(p.market)}</td><td class="r ${p.market>=p.cost?'pos':'neg'}">${php(p.market-p.cost)} (${((p.market/p.cost-1)*100).toFixed(0)}%)</td><td style="color:var(--dim)">${p.note||'—'}</td></tr>`).join('')+
+    `<tr style="font-weight:700"><td>TOTAL (excluded)</td><td class="r">${php(P.properties.reduce((a,b)=>a+b.cost,0))}</td><td class="r g">${php(P.properties.reduce((a,b)=>a+b.market,0))}</td><td class="r pos">${php(P.properties.reduce((a,b)=>a+b.market-b.cost,0))}</td><td>non-liquid</td></tr></tbody>`;
+  $('pm').textContent=phpM(P.properties.reduce((a,b)=>a+b.market,0));
+}
+
+/* ================= net worth milestones (base liquid, net of withdrawals) ================= */
+function fillMilestones(){
+  const d=projData||project();
+  const bi=y=>d.years.indexOf(y);
+  const base=d.out.base;
+  const LV=[3.5e6,4e6,5e6,6e6,8e6,10e6,12e6,15e6];
+  const rows=LV.map(lv=>{
+    let hit=null;
+    for(let i=0;i<d.years.length;i++){ if(base[i]>=lv){hit=d.years[i];break;} }
+    return {lv,hit};
+  });
+  const age60=base[bi(2045)];
+  $('miles').innerHTML='<thead><tr><th>Milestone</th><th class="r">Reached (base 6%)</th><th class="r">Age</th><th>Meaning</th></tr></thead><tbody>'+
+    rows.map(r=>{
+      const tag = r.lv===4e6?'retire' : (r.lv===8e6||r.lv===10e6)?'floor':'';
+      const meaning = r.lv===3.5e6?'today · starting liquid'
+        : r.lv===4e6?'★ walk-away line — quit if gates green'
+        : r.lv===8e6?'your age-60 gut, low end':r.lv===10e6?'your age-60 gut, high end'
+        : r.lv>=12e6?'surplus / inheritance territory':'buffer building';
+      const when = r.hit? r.hit : '<span style="opacity:.5">not before 2060</span>';
+      const age = r.hit? 41+(r.hit-2026) : '—';
+      return `<tr class="${tag}"><td class="g">${usdM(r.lv)}</td><td class="r">${when}</td><td class="r">${age}</td><td style="color:var(--dim)">${meaning}</td></tr>`;
+    }).join('')+
+    `<tr style="border-top:2px solid var(--line)"><td class="g">Age 60 (2045)</td><td class="r" style="font-weight:700">${usdM(age60)}</td><td class="r">60</td><td style="color:var(--dim)">base-case liquid at your target age — vs your $8–10M gut</td></tr></tbody>`;
+}
+
+/* ================= income-generating assets (NOT in net worth) ================= */
+function incomeRows(){
+  const eng=engine(); // gives shrinking AAPL shares + price per year
+  const rows=[]; let ltg=P.ph.LTG, creit=P.ph.CREIT;
+  for(let y=2027;y<=2060;y++){
+    const t=y-2026;
+    // conservative rent step-ups (+~₱2k/unit every ~5yrs)
+    const c1 = 15000 + 2000*Math.floor(t/5);
+    const c2 = 20000 + 2000*Math.floor(t/5);
+    const rentGross=(c1+c2)*12;
+    const rentEff=rentGross*(S.occ/100);
+    // LTG/CREIT DRIP compounding balances, quarterly dividends
+    ltg*=1.03; creit*=1.02;
+    const ltgDiv=ltg*0.025;        // annual, ÷4 per quarter
+    const creitDiv=creit*0.065;
+    // AAPL dividend on shrinking shares, yield growing 4%/yr
+    const er=eng.find(e=>e.y===y);
+    const shares=er?er.shares:P.aaplShares;
+    const price=er?er.price:S.aapl;
+    const aaplYield=0.005*Math.pow(1.04,t);
+    const aaplDivPHP=shares*price*aaplYield*S.php;
+    const sss = y>=2045 ? 13000*13*Math.pow(1.02,y-2045) : 0;
+    const total=rentEff+ltgDiv+creitDiv+aaplDivPHP+sss;
+    rows.push({y,age:41+t,c1,c2,rentEff,ltgDiv,creitDiv,aaplDivPHP,sss,total});
+  }
+  return rows;
+}
+function fillIncome(){
+  const rows=incomeRows();
+  // KPI cards = first full retirement year (or 2029 default) snapshot
+  const snapYear=Math.max(S.year,2027);
+  const s=rows.find(r=>r.y===snapYear)||rows[0];
+  const kpi=[
+    ['RENT @'+S.occ+'%',php(s.rentEff/12)+'/mo',php(s.rentEff)],
+    ['LTG DIV (DRIP)',php(s.ltgDiv/4)+'/qtr',php(s.ltgDiv)],
+    ['CREIT DIV (DRIP)',php(s.creitDiv/4)+'/qtr',php(s.creitDiv)],
+    ['AAPL DIV',php(s.aaplDivPHP)+'/yr','on '+ (engine().find(e=>e.y===snapYear)?.shares||P.aaplShares).toFixed(0)+' sh'],
+    ['TOTAL @'+snapYear,php(s.total),php(s.total/12)+'/mo']
+  ];
+  $('inc-kpi').innerHTML=kpi.map((k,i)=>`<div style="padding:10px;border-radius:10px;background:${i===4?'rgba(52,211,153,.08)':'var(--bg3)'};border:1px solid ${i===4?'rgba(52,211,153,.2)':'var(--line)'}"><div class="l" style="font-size:9px;color:var(--faint);font-family:var(--mono)">${k[0]}</div><div class="${i===4?'pos':'g'}" style="font-weight:800;font-size:15px">${k[1]}</div><div class="note" style="margin-top:0;font-size:10px">${k[2]}</div></div>`).join('');
+  $('income').innerHTML='<thead><tr><th>Yr</th><th class="c">Age</th><th class="r">Rent @occ ₱</th><th class="r">LTG (DRIP) ₱</th><th class="r">CREIT (DRIP) ₱</th><th class="r">AAPL Div ₱</th><th class="r">SSS ₱</th><th class="r">Total ₱/yr</th></tr></thead><tbody>'+
+    rows.map(r=>`<tr${r.y===snapYear?' style="background:rgba(52,211,153,.06)"':r.y===2045?' style="background:rgba(251,191,36,.05)"':''}><td>${r.y}${r.y===2045?' ★60':''}</td><td class="c">${r.age}</td><td class="r">${php(r.rentEff)}</td><td class="r">${php(r.ltgDiv)}</td><td class="r">${php(r.creitDiv)}</td><td class="r">${php(r.aaplDivPHP)}</td><td class="r">${r.sss?php(r.sss):'—'}</td><td class="r pos" style="font-weight:700">${php(r.total)}</td></tr>`).join('')+'</tbody>';
+  window._incomeRows=rows;
+  drawIncome(rows);
+}
+function drawIncome(rows){
+  const cv=$('incchart'),r=cv.getBoundingClientRect();if(!r.width)return;
+  const dpr=devicePixelRatio||1;cv.width=r.width*dpr;cv.height=130*dpr;const x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);
+  const W=r.width,H=130,m={l:52,r:12,t:14,b:22},pw=W-m.l-m.r,ph=H-m.t-m.b;x.clearRect(0,0,W,H);x.fillStyle='#0f172a';x.fillRect(m.l,m.t,pw,ph);
+  const parts=[['rentEff','#fbbf24'],['aaplDivPHP','#34d399'],['ltgDiv','#60a5fa'],['creitDiv','#a78bfa'],['sss','#f472b6']];
+  const totals=rows.map(r=>parts.reduce((a,p)=>a+r[p[0]],0));
+  const mx=Math.max(...totals,1);
+  x.strokeStyle='rgba(255,255,255,.06)';x.fillStyle='rgba(255,255,255,.5)';x.font='9px ui-monospace';x.textAlign='right';
+  for(let i=0;i<=3;i++){const yy=m.t+ph*i/3;x.beginPath();x.moveTo(m.l,yy);x.lineTo(m.l+pw,yy);x.stroke();x.fillText('₱'+((mx-i/3*mx)/1e6).toFixed(1)+'M',m.l-6,yy+3);}
+  const bw=pw/rows.length*0.72;
+  rows.forEach((rr,i)=>{let acc=0;const xx=m.l+i/rows.length*pw+(pw/rows.length-bw)/2;parts.forEach(p=>{const v=rr[p[0]];if(v<=0)return;const bh=v/mx*ph;const yy=m.t+ph-(acc+v)/mx*ph;x.fillStyle=p[1];x.fillRect(xx,yy,bw,bh);acc+=v;});});
+  x.fillStyle='rgba(255,255,255,.5)';x.font='9px ui-monospace';x.textAlign='center';
+  rows.forEach((rr,i)=>{if(i%6===0||i===rows.length-1)x.fillText(rr.y,m.l+i/rows.length*pw+pw/rows.length/2,H-6);});
+  // legend
+  let lx=m.l+6;x.textAlign='left';[['Rent','#fbbf24'],['AAPL','#34d399'],['LTG','#60a5fa'],['CREIT','#a78bfa'],['SSS','#f472b6']].forEach(([lb,c])=>{x.fillStyle=c;x.fillRect(lx,m.t+2,10,10);x.fillStyle='rgba(255,255,255,.7)';x.fillText(lb,lx+13,m.t+10);lx+=x.measureText(lb).width+26;});
+}
+
+/* ================= gates ================= */
+function renderGates(){
+  const el=$('gates'); el.innerHTML='';
+  GATES.forEach((g,i)=>{
+    const done=gateState[i];
+    const div=document.createElement('div');
+    div.className='gate'+(done?' done':'');
+    div.innerHTML=`<div class="box">${done?'✓':''}</div><div><div class="t">${g.t}</div><div class="d">${g.d}</div></div>`;
+    div.onclick=()=>{gateState[i]=!gateState[i];renderGates();};
+    el.appendChild(div);
+  });
+  const n=gateState.filter(Boolean).length;
+  const v=$('verdict');
+  if(n===6){v.className='verdict go';v.textContent='✓ ALL GATES GREEN — STOP WORKING IF YOU WANT TO';}
+  else if(n>=4){v.className='verdict go';v.textContent=`${n}/6 — nearly there · finish the ring-fence`;}
+  else {v.className='verdict no';v.textContent=`${n}/6 gates — not yet independent`;}
+  $('chip-verdict').textContent=`GATES: ${n} / 6`;
+  $('chip-verdict').className='chip '+(n===6?'green':'gold');
+}
+
+/* ================= render all ================= */
+function render(){
+  // KPI live
+  const liq=liquidUSD();
+  $('k-php').textContent=phpM(3.5e6*S.php)+" · excludes property";
+  $('k-gap').textContent="Gap to go: "+usdM(Math.max(4e6-3.5e6,0));
+  $('k-swr').textContent=(2.28e6/(4e6*S.php)*100).toFixed(2)+"%";
+  $('swrb').textContent=(187e6/34/(4e6*S.php)*100).toFixed(2)+"%";
+  $('b1').textContent=phpM(2.28e6*2)+"–"+phpM(2.28e6*3);
+  $('volt').textContent=(VOL[S.scn]*100).toFixed(0);
+  drawProj(); drawDonut();
+  const rows=engine(); fillEngine(rows); drawAapl(rows);
+  fillWD(); fillProp(); fillFloor();
+  fillMilestones(); fillIncome();
+  const mc=monte(); $('k-succ').textContent=mc.succ.toFixed(0)+"%"; $('mcs').textContent=mc.succ.toFixed(1)+"%"; $('mcm').textContent=phpM(mc.median); drawMC(mc);
+  renderGates();
+}
+
+/* ================= wire controls ================= */
+$('yrs').querySelectorAll('button').forEach(b=>b.onclick=()=>{$('yrs').querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');S.year=+b.dataset.y;render();});
+$('scn').onchange=e=>{S.scn=e.target.value;render();};
+$('i-aapl').oninput=e=>{S.aapl=+e.target.value;$('l-aapl').textContent=S.aapl.toFixed(2);render();};
+$('i-spend').oninput=e=>{S.spend=+e.target.value;$('l-spend').textContent=S.spend;render();};
+$('i-occ').oninput=e=>{S.occ=+e.target.value;$('l-occ').textContent=S.occ;render();};
+$('i-php').oninput=e=>{S.php=+e.target.value;$('l-php').textContent=S.php.toFixed(2);render();};
+$('i-sgd').oninput=e=>{S.sgd=+e.target.value;$('l-sgd').textContent=S.sgd.toFixed(3);render();};
+$('nwtog').querySelectorAll('button').forEach(b=>b.onclick=()=>{$('nwtog').querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');S.nw=b.dataset.v;drawDonut();});
+window.addEventListener('resize',()=>{drawProj();drawDonut();drawAapl(engine());drawIncome(window._incomeRows||incomeRows());});
+
+render();
+</script>
+</body>
+</html>
